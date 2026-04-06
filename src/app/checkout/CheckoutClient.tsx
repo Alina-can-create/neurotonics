@@ -210,7 +210,7 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
                   appearance: {
                     theme: 'stripe',
                     variables: {
-                      colorPrimary: '#15803d',
+                      colorPrimary: '#1d4ed8',
                       colorBackground: '#ffffff',
                       colorText: '#111827',
                       colorDanger: '#dc2626',
