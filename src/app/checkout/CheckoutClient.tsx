@@ -153,16 +153,10 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
 
     if (validPostcode) {
       try {
-        const res = await fetch('/api/calculate-shipping', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ postcode: validPostcode }),
-        });
-        const data = await res.json();
-        if (res.ok && typeof data.fee === 'number' && typeof data.zone === 'string' && typeof data.estimatedDays === 'string') {
-          shippingData = data;
-          setShipping(data);
-        }
+        const { calculateShipping } = await import('@/lib/shipping');
+        const data = calculateShipping(validPostcode);
+        shippingData = data;
+        setShipping(data);
       } catch {
         console.error('Shipping calculation failed during checkout initialization');
       }

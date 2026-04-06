@@ -41,19 +41,8 @@ export default function ProductClient() {
     setShipping(null);
 
     try {
-      const res = await fetch('/api/calculate-shipping', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ postcode: postcode.trim() }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setShippingError(data.error || 'Failed to calculate shipping');
-        return;
-      }
-
+      const { calculateShipping } = await import('@/lib/shipping');
+      const data = calculateShipping(postcode.trim());
       setShipping(data);
     } catch {
       setShippingError('Failed to calculate shipping. Please try again.');
