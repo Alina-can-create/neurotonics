@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
 const paymentSchema = z.object({
   amount: z.number().positive('Amount must be positive'),
   shipping: z.object({
-    zone: z.string().optional(),
+    zone: z.string().max(100).optional(),
     fee: z.number().min(0).optional(),
   }).optional(),
 });

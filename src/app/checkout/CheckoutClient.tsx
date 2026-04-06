@@ -140,6 +140,9 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
   const [error, setError] = useState('');
   const [initialized, setInitialized] = useState(false);
 
+  // Validate postcode format (4-digit Australian postcode)
+  const validPostcode = postcode && /^\d{4}$/.test(postcode) ? postcode : null;
+
   const total = subtotal + (shipping?.fee || 0);
 
   const initialize = useCallback(async () => {
@@ -148,20 +151,20 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
 
     let shippingData: ShippingResult | null = null;
 
-    if (postcode) {
+    if (validPostcode) {
       try {
         const res = await fetch('/api/calculate-shipping', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ postcode }),
+          body: JSON.stringify({ postcode: validPostcode }),
         });
         const data = await res.json();
-        if (data.fee !== undefined) {
+        if (res.ok && typeof data.fee === 'number' && typeof data.zone === 'string' && typeof data.estimatedDays === 'string') {
           shippingData = data;
           setShipping(data);
         }
       } catch {
-        // Shipping calculation failed silently
+        console.error('Shipping calculation failed during checkout initialization');
       }
     }
 
@@ -181,7 +184,7 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
     } catch {
       setError('Failed to initialize payment. Please try again.');
     }
-  }, [initialized, postcode, subtotal]);
+  }, [initialized, validPostcode, subtotal]);
 
   return (
     <main className="bg-[#0a0a1a] min-h-screen">
