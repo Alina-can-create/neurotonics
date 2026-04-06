@@ -69,7 +69,7 @@ export default function QuizClient() {
             </ul>
           </div>
 
-          <p className="text-center text-gray-400 text-xs mb-6">
+          <p className="text-center text-gray-500 text-xs mb-6">
             If your symptoms are severe or persistent, please consult a healthcare professional for personalised advice.
           </p>
 
