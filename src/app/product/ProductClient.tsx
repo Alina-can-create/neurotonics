@@ -58,9 +58,9 @@ export default function ProductClient() {
         {/* Breadcrumb */}
         <nav className="mb-8 text-sm" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2 text-gray-500">
-            <li><Link href="/" className="hover:text-blue-600 transition-colors">Home</Link></li>
+            <li><Link href="/" className="hover:text-brand-primary transition-colors">Home</Link></li>
             <li><span className="mx-2">/</span></li>
-            <li className="text-blue-600">{productContent.name}</li>
+            <li className="text-brand-primary">{productContent.name}</li>
           </ol>
         </nav>
 
@@ -87,8 +87,8 @@ export default function ProductClient() {
                     onClick={() => setActiveImageIndex(index)}
                     className={`flex-1 aspect-square rounded-xl bg-gray-50 border ${
                       activeImageIndex === index
-                        ? 'border-blue-600'
-                        : 'border-gray-200 hover:border-blue-400'
+                        ? 'border-brand-primary'
+                        : 'border-gray-200 hover:border-brand-primary/40'
                     } transition-colors flex items-center justify-center p-2 overflow-hidden`}
                     aria-label={`View ${image.alt}`}
                   >
@@ -112,7 +112,7 @@ export default function ProductClient() {
               {productContent.badges.map((badge) => (
                 <span
                   key={badge}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200"
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-primary-light text-brand-primary border border-brand-primary/20"
                 >
                   {badge}
                 </span>
@@ -125,7 +125,7 @@ export default function ProductClient() {
 
             {/* Price */}
             <div className="flex items-baseline space-x-3">
-              <span className="text-4xl font-bold text-blue-700">
+              <span className="text-4xl font-bold text-brand-primary">
                 ${productContent.price.toFixed(2)}
               </span>
               <span className="text-gray-500 text-lg">AUD</span>
@@ -134,7 +134,7 @@ export default function ProductClient() {
             {/* Supply info */}
             <div className="flex items-center space-x-4 text-sm text-gray-500">
               <span className="flex items-center space-x-1">
-                <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
                 <span>{productContent.capsuleCount} capsules</span>
@@ -180,8 +180,8 @@ export default function ProductClient() {
                 onClick={handleAddToCart}
                 className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
                   addedToCart
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-blue-700 hover:bg-blue-800 text-white shadow-lg shadow-blue-700/20 hover:shadow-blue-700/30'
+                    ? 'bg-brand-primary text-white'
+                    : 'bg-brand-primary hover:bg-brand-primary-dark text-white shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/30'
                 }`}
               >
                 {addedToCart ? '✓ Added to Cart!' : `Add to Cart — $${(productContent.price * quantity).toFixed(2)} AUD`}
@@ -189,7 +189,7 @@ export default function ProductClient() {
 
               <Link
                 href="/cart"
-                className="block w-full py-3 text-center border border-blue-700 text-blue-700 hover:bg-blue-50 rounded-xl font-medium transition-all duration-300"
+                className="block w-full py-3 text-center border border-brand-primary text-brand-primary hover:bg-brand-primary-light rounded-xl font-medium transition-all duration-300"
               >
                 View Cart
               </Link>
@@ -205,12 +205,12 @@ export default function ProductClient() {
                   onChange={(e) => setPostcode(e.target.value.replace(/\D/g, '').slice(0, 4))}
                   placeholder="Enter postcode (e.g. 2000)"
                   maxLength={4}
-                  className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-primary transition-colors"
                 />
                 <button
                   onClick={handleShippingCalculation}
                   disabled={shippingLoading || postcode.length !== 4}
-                  className="px-6 py-2.5 bg-blue-50 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+                  className="px-6 py-2.5 bg-brand-primary-light text-brand-primary border border-brand-primary/30 rounded-lg hover:bg-brand-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
                 >
                   {shippingLoading ? 'Calculating...' : 'Calculate'}
                 </button>
@@ -219,13 +219,13 @@ export default function ProductClient() {
                 <p className="mt-2 text-red-600 text-sm">{shippingError}</p>
               )}
               {shipping && (
-                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="mt-3 p-3 bg-brand-primary-light border border-brand-primary/20 rounded-lg">
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-gray-900 text-sm font-medium">{shipping.zone}</p>
                       <p className="text-gray-500 text-xs">{shipping.estimatedDays}</p>
                     </div>
-                    <p className="text-blue-700 font-semibold">${shipping.fee.toFixed(2)} AUD</p>
+                    <p className="text-brand-primary font-semibold">${shipping.fee.toFixed(2)} AUD</p>
                   </div>
                 </div>
               )}
@@ -252,7 +252,7 @@ export default function ProductClient() {
                 onClick={() => setActiveTab(tab)}
                 className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
                   activeTab === tab
-                    ? 'text-blue-600 border-blue-600'
+                    ? 'text-brand-primary border-brand-primary'
                     : 'text-gray-500 border-transparent hover:text-gray-700'
                 }`}
               >
@@ -276,7 +276,7 @@ export default function ProductClient() {
                   <div key={index} className="p-4 rounded-xl bg-white border border-gray-200">
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="text-gray-900 font-medium">{ingredient.name}</h4>
-                      <span className="text-blue-600 text-sm font-semibold">{ingredient.amount}</span>
+                      <span className="text-brand-primary text-sm font-semibold">{ingredient.amount}</span>
                     </div>
                     <p className="text-gray-500 text-sm">{ingredient.benefit}</p>
                   </div>
@@ -295,7 +295,7 @@ export default function ProductClient() {
                     >
                       <span className="text-gray-900 font-medium pr-4">{item.question}</span>
                       <svg
-                        className={`w-5 h-5 text-blue-600 transition-transform flex-shrink-0 ${expandedFaq === index ? 'rotate-180' : ''}`}
+                        className={`w-5 h-5 text-brand-primary transition-transform flex-shrink-0 ${expandedFaq === index ? 'rotate-180' : ''}`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
