@@ -1,17 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { z } from 'zod/v4';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-04-30.basil',
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+
+const paymentSchema = z.object({
+  amount: z.number().positive('Amount must be positive'),
+  shipping: z.object({
+    zone: z.string().optional(),
+    fee: z.number().min(0).optional(),
+  }).optional(),
 });
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, shipping } = await request.json();
+    const body = await request.json();
+    const result = paymentSchema.safeParse(body);
 
-    if (!amount || amount <= 0) {
-      return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error.issues[0]?.message || 'Invalid request data' },
+        { status: 400 }
+      );
     }
+
+    const { amount, shipping } = result.data;
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // Convert to cents
