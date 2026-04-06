@@ -38,7 +38,8 @@ export default function QuizClient() {
     setShowResult(false);
   };
 
-  const result = quizContent.results.brain_boost_1000;
+  const resultKey = (answers.primary_concern || 'stress') as keyof typeof quizContent.results;
+  const result = quizContent.results[resultKey] || quizContent.results.stress;
 
   if (showResult) {
     return (
@@ -55,18 +56,22 @@ export default function QuizClient() {
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 mb-8">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Why Brain Boost 1000 is right for you:</h2>
-            <ul className="space-y-3">
-              {result.matchReasons.map((reason, index) => (
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Here are our top tips for you:</h2>
+            <ul className="space-y-4">
+              {result.tips.map((tip, index) => (
                 <li key={index} className="flex items-start space-x-3">
-                  <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span className="text-gray-600 text-sm">{reason}</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-700 text-xs font-bold flex-shrink-0 mt-0.5">
+                    {index + 1}
+                  </span>
+                  <span className="text-gray-600 text-sm leading-relaxed">{tip}</span>
                 </li>
               ))}
             </ul>
           </div>
+
+          <p className="text-center text-gray-400 text-xs mb-6">
+            If your symptoms are severe or persistent, please consult a healthcare professional for personalised advice.
+          </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
