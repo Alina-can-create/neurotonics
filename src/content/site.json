@@ -1,0 +1,107 @@
+{
+  "brand": {
+    "name": "Neurotonics",
+    "tagline": "Unlock Your Brain's Full Potential",
+    "description": "Powerful cognitive supplements from nature. No artificial preservatives. No artificial additives. Made in Australia.",
+    "logo": "/images/logo.svg"
+  },
+  "hero": {
+    "headline": "Sharpen Your Mind, Naturally",
+    "subheadline": "Clinically-backed, ARTG-listed cognitive supplements made from nature's finest ingredients. No artificial preservatives or additives. 100% Vegan. Made in Australia.",
+    "ctaText": "Shop Brain Boost 1000",
+    "ctaLink": "/product",
+    "secondaryCtaText": "Take the Quiz",
+    "secondaryCtaLink": "/quiz",
+    "backgroundImage": "/images/hero-bg.jpg"
+  },
+  "features": [
+    {
+      "icon": "leaf",
+      "title": "100% Natural",
+      "description": "No artificial preservatives or additives. Just pure, powerful ingredients sourced from nature."
+    },
+    {
+      "icon": "shield",
+      "title": "ARTG Listed",
+      "description": "Listed on the Australian Register of Therapeutic Goods for your peace of mind and safety."
+    },
+    {
+      "icon": "heart",
+      "title": "Vegan Friendly",
+      "description": "Completely plant-based formula suitable for vegans and vegetarians alike."
+    },
+    {
+      "icon": "flag",
+      "title": "Made in Australia",
+      "description": "Proudly manufactured in Australia under strict quality control and GMP standards."
+    },
+    {
+      "icon": "brain",
+      "title": "Cognitive Support",
+      "description": "Scientifically formulated to support focus, memory, and mental clarity."
+    },
+    {
+      "icon": "sparkles",
+      "title": "Stress Relief",
+      "description": "Natural adaptogens to help your body manage stress and reduce brain fog."
+    }
+  ],
+  "benefits": {
+    "headline": "Why Choose Neurotonics?",
+    "subheadline": "Thousands of Australians trust Neurotonics for their daily cognitive health.",
+    "items": [
+      {
+        "title": "Combat Brain Fog",
+        "description": "Our natural formula helps clear mental haze so you can think clearly and perform at your best every day.",
+        "image": "/images/benefit-focus.jpg"
+      },
+      {
+        "title": "Manage Stress Naturally",
+        "description": "Powerful adaptogenic herbs work with your body to reduce cortisol levels and promote calm focus.",
+        "image": "/images/benefit-stress.jpg"
+      },
+      {
+        "title": "Boost Memory & Focus",
+        "description": "Clinically studied ingredients support short-term recall, long-term memory formation, and sustained concentration.",
+        "image": "/images/benefit-memory.jpg"
+      }
+    ]
+  },
+  "testimonials": [
+    {
+      "name": "Sarah M.",
+      "location": "Sydney, NSW",
+      "rating": 5,
+      "text": "I've tried countless supplements for brain fog and nothing worked until Brain Boost 1000. Within two weeks, I noticed a massive difference in my focus and clarity. As someone who values natural products, I love that it's vegan and has no artificial additives."
+    },
+    {
+      "name": "James T.",
+      "location": "Melbourne, VIC",
+      "rating": 5,
+      "text": "The stress relief alone is worth it. I'm a software developer and the mental demands are intense. Brain Boost 1000 helps me stay sharp through long coding sessions without the jitters of caffeine."
+    },
+    {
+      "name": "Emily R.",
+      "location": "Brisbane, QLD",
+      "rating": 5,
+      "text": "Finally, a supplement that's ARTG listed and actually works! I feel confident knowing it's made in Australia with real quality standards. My memory has improved noticeably in just a month."
+    }
+  ],
+  "footer": {
+    "about": "Neurotonics is Australia's trusted brand for natural cognitive supplements. Our products are ARTG listed, vegan, and free from artificial preservatives and additives.",
+    "contactEmail": "hello@neurotonics.com.au",
+    "contactPhone": "1300 NEURO (1300 638 76)",
+    "copyright": "© 2026 Neurotonics. All rights reserved.",
+    "disclaimer": "Always read the label and follow the directions for use. Supplements should not replace a balanced diet. If symptoms persist, talk to your health professional.",
+    "socialLinks": {
+      "instagram": "https://instagram.com/neurotonics",
+      "facebook": "https://facebook.com/neurotonics",
+      "twitter": "https://twitter.com/neurotonics"
+    }
+  },
+  "navigation": [
+    { "label": "Home", "href": "/" },
+    { "label": "Brain Boost 1000", "href": "/product" },
+    { "label": "Find Your Solution", "href": "/quiz" }
+  ]
+}

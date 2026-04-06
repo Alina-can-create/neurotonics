@@ -1,0 +1,72 @@
+{
+  "title": "Find Your Perfect Cognitive Solution",
+  "subtitle": "Answer a few quick questions and we'll recommend the right Neurotonics product for you.",
+  "questions": [
+    {
+      "id": "primary_concern",
+      "question": "What is your primary concern?",
+      "options": [
+        { "value": "brain_fog", "label": "Brain fog and lack of clarity", "icon": "cloud" },
+        { "value": "stress", "label": "Stress and anxiety", "icon": "zap" },
+        { "value": "memory", "label": "Poor memory and recall", "icon": "brain" },
+        { "value": "focus", "label": "Difficulty focusing and concentrating", "icon": "target" },
+        { "value": "energy", "label": "Mental fatigue and low energy", "icon": "battery" }
+      ]
+    },
+    {
+      "id": "severity",
+      "question": "How often do you experience this?",
+      "options": [
+        { "value": "rarely", "label": "Occasionally (a few times a month)", "icon": "calendar" },
+        { "value": "sometimes", "label": "Regularly (a few times a week)", "icon": "clock" },
+        { "value": "often", "label": "Most days", "icon": "repeat" },
+        { "value": "always", "label": "Every single day", "icon": "alert" }
+      ]
+    },
+    {
+      "id": "lifestyle",
+      "question": "Which best describes your lifestyle?",
+      "options": [
+        { "value": "student", "label": "Student — I need to study and retain information", "icon": "book" },
+        { "value": "professional", "label": "Working professional — Long hours, high demands", "icon": "briefcase" },
+        { "value": "active", "label": "Active lifestyle — I exercise and want mental edge", "icon": "activity" },
+        { "value": "senior", "label": "Over 50 — I want to maintain cognitive health", "icon": "heart" }
+      ]
+    },
+    {
+      "id": "supplement_preference",
+      "question": "What's important to you in a supplement?",
+      "options": [
+        { "value": "natural", "label": "100% natural with no artificial ingredients", "icon": "leaf" },
+        { "value": "certified", "label": "Clinically tested and government listed", "icon": "shield" },
+        { "value": "vegan", "label": "Vegan and plant-based", "icon": "sprout" },
+        { "value": "australian", "label": "Made in Australia with local quality standards", "icon": "flag" }
+      ]
+    },
+    {
+      "id": "tried_before",
+      "question": "Have you tried cognitive supplements before?",
+      "options": [
+        { "value": "never", "label": "No, this would be my first time", "icon": "star" },
+        { "value": "some", "label": "Yes, but they didn't work well", "icon": "thumbs-down" },
+        { "value": "current", "label": "Yes, I'm looking for something better", "icon": "search" },
+        { "value": "natural_only", "label": "Only natural remedies like herbal teas", "icon": "coffee" }
+      ]
+    }
+  ],
+  "results": {
+    "brain_boost_1000": {
+      "title": "Brain Boost 1000 is Perfect for You!",
+      "description": "Based on your answers, Brain Boost 1000 is the ideal solution for your cognitive needs. Its powerful blend of natural nootropics directly targets your concerns with scientifically-backed ingredients.",
+      "matchReasons": [
+        "Addresses your primary cognitive concern with targeted natural ingredients",
+        "ARTG listed for safety and efficacy — meeting Australia's highest standards",
+        "100% vegan with zero artificial preservatives or additives",
+        "Proudly made in Australia under strict GMP standards",
+        "Clinically studied ingredients like Bacopa Monnieri and Lion's Mane"
+      ],
+      "ctaText": "Get Brain Boost 1000 — $79.90 AUD",
+      "ctaLink": "/product"
+    }
+  }
+}
