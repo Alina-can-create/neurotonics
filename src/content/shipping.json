@@ -1,0 +1,108 @@
+{
+  "title": "Shipping & Delivery",
+  "freeShippingThreshold": null,
+  "zones": [
+    {
+      "name": "Sydney Metro",
+      "states": ["NSW"],
+      "postcodeRanges": [
+        { "from": "2000", "to": "2249" }
+      ],
+      "fee": 8.95,
+      "estimatedDays": "2-3 business days"
+    },
+    {
+      "name": "Melbourne Metro",
+      "states": ["VIC"],
+      "postcodeRanges": [
+        { "from": "3000", "to": "3207" }
+      ],
+      "fee": 8.95,
+      "estimatedDays": "2-3 business days"
+    },
+    {
+      "name": "Brisbane Metro",
+      "states": ["QLD"],
+      "postcodeRanges": [
+        { "from": "4000", "to": "4179" }
+      ],
+      "fee": 8.95,
+      "estimatedDays": "2-3 business days"
+    },
+    {
+      "name": "New South Wales",
+      "states": ["NSW"],
+      "postcodeRanges": [
+        { "from": "2000", "to": "2999" }
+      ],
+      "fee": 11.95,
+      "estimatedDays": "3-5 business days"
+    },
+    {
+      "name": "Victoria",
+      "states": ["VIC"],
+      "postcodeRanges": [
+        { "from": "3000", "to": "3999" }
+      ],
+      "fee": 11.95,
+      "estimatedDays": "3-5 business days"
+    },
+    {
+      "name": "Queensland",
+      "states": ["QLD"],
+      "postcodeRanges": [
+        { "from": "4000", "to": "4999" }
+      ],
+      "fee": 11.95,
+      "estimatedDays": "3-5 business days"
+    },
+    {
+      "name": "South Australia",
+      "states": ["SA"],
+      "postcodeRanges": [
+        { "from": "5000", "to": "5999" }
+      ],
+      "fee": 12.95,
+      "estimatedDays": "4-6 business days"
+    },
+    {
+      "name": "Western Australia",
+      "states": ["WA"],
+      "postcodeRanges": [
+        { "from": "6000", "to": "6999" }
+      ],
+      "fee": 14.95,
+      "estimatedDays": "5-7 business days"
+    },
+    {
+      "name": "Tasmania",
+      "states": ["TAS"],
+      "postcodeRanges": [
+        { "from": "7000", "to": "7999" }
+      ],
+      "fee": 13.95,
+      "estimatedDays": "5-7 business days"
+    },
+    {
+      "name": "Northern Territory",
+      "states": ["NT"],
+      "postcodeRanges": [
+        { "from": "0800", "to": "0899" }
+      ],
+      "fee": 15.95,
+      "estimatedDays": "6-8 business days"
+    },
+    {
+      "name": "ACT",
+      "states": ["ACT"],
+      "postcodeRanges": [
+        { "from": "2600", "to": "2620" }
+      ],
+      "fee": 9.95,
+      "estimatedDays": "3-4 business days"
+    }
+  ],
+  "defaultFee": 14.95,
+  "defaultEstimatedDays": "5-8 business days",
+  "note": "All orders are dispatched from our Sydney warehouse within 1-2 business days."
+}

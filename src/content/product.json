@@ -1,0 +1,87 @@
+{
+  "name": "Brain Boost 1000",
+  "slug": "brain-boost-1000",
+  "price": 79.90,
+  "currency": "AUD",
+  "shortDescription": "A powerful, natural cognitive supplement to sharpen focus, boost memory, and combat stress and brain fog.",
+  "longDescription": "Brain Boost 1000 is a premium cognitive supplement formulated with nature's most powerful nootropic ingredients. Each capsule delivers a potent blend of Bacopa Monnieri, Lion's Mane Mushroom, Ginkgo Biloba, and Rhodiola Rosea — scientifically studied ingredients known to support mental clarity, memory, and stress resilience.\n\nDesigned for those who refuse to compromise on quality, Brain Boost 1000 contains zero artificial preservatives, zero artificial additives, and is 100% vegan. Proudly made in Australia and listed on the Australian Register of Therapeutic Goods (ARTG).",
+  "images": [
+    {
+      "src": "/images/product-main.png",
+      "alt": "Brain Boost 1000 - Neurotonics cognitive supplement bottle"
+    },
+    {
+      "src": "/images/product-ingredients.png",
+      "alt": "Brain Boost 1000 - Natural ingredients"
+    },
+    {
+      "src": "/images/product-lifestyle.png",
+      "alt": "Brain Boost 1000 - Active lifestyle"
+    }
+  ],
+  "badges": [
+    "ARTG Listed",
+    "100% Vegan",
+    "Made in Australia",
+    "No Artificial Preservatives",
+    "No Artificial Additives",
+    "Natural Product"
+  ],
+  "servingSize": "2 capsules daily",
+  "capsuleCount": 60,
+  "supply": "30-day supply",
+  "ingredients": [
+    {
+      "name": "Bacopa Monnieri Extract",
+      "amount": "300mg",
+      "benefit": "Supports memory and cognitive function"
+    },
+    {
+      "name": "Lion's Mane Mushroom Extract",
+      "amount": "250mg",
+      "benefit": "Promotes nerve growth and brain health"
+    },
+    {
+      "name": "Ginkgo Biloba Extract",
+      "amount": "120mg",
+      "benefit": "Enhances blood flow to the brain"
+    },
+    {
+      "name": "Rhodiola Rosea Extract",
+      "amount": "200mg",
+      "benefit": "Reduces stress and mental fatigue"
+    },
+    {
+      "name": "Phosphatidylserine",
+      "amount": "100mg",
+      "benefit": "Supports cell membrane integrity"
+    },
+    {
+      "name": "Vitamin B12",
+      "amount": "500mcg",
+      "benefit": "Essential for nervous system function"
+    }
+  ],
+  "faq": [
+    {
+      "question": "How long does it take to see results?",
+      "answer": "Many customers report noticeable improvements in focus and clarity within 2-4 weeks of consistent daily use. For optimal results, we recommend taking Brain Boost 1000 for at least 8-12 weeks."
+    },
+    {
+      "question": "Are there any side effects?",
+      "answer": "Brain Boost 1000 is made from natural ingredients and is generally well-tolerated. As with any supplement, we recommend consulting your healthcare professional before starting, especially if you are pregnant, nursing, or taking medication."
+    },
+    {
+      "question": "Is it really 100% vegan?",
+      "answer": "Yes! Every ingredient in Brain Boost 1000 is plant-based, including our vegetable cellulose capsules. No animal products or by-products are used in our formulation or manufacturing process."
+    },
+    {
+      "question": "What does ARTG listed mean?",
+      "answer": "ARTG stands for Australian Register of Therapeutic Goods. It means our product has been assessed and listed by the Therapeutic Goods Administration (TGA), Australia's regulatory authority for therapeutic goods, meeting their safety and quality standards."
+    },
+    {
+      "question": "Can I take it with other supplements?",
+      "answer": "Brain Boost 1000 is generally safe to combine with other supplements, but we always recommend consulting your healthcare professional to ensure there are no interactions with your current regimen."
+    }
+  ]
+}
