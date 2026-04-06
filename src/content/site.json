@@ -1,19 +1,56 @@
 {
   "brand": {
     "name": "Neurotonics",
-    "tagline": "Unlock Your Brain's Full Potential",
-    "description": "Powerful cognitive supplements from nature. No artificial preservatives. No artificial additives. Made in Australia.",
+    "tagline": "Australia's Trusted Cognitive Wellness Brand",
+    "description": "Premium cognitive supplements backed by science. Natural ingredients, ARTG listed, and proudly made in Australia.",
     "logo": "/images/logo.svg"
   },
+  "announcement": {
+    "text": "Free shipping on orders over $99 | ARTG Listed | Made in Australia",
+    "link": "/product",
+    "linkText": "Shop Now"
+  },
   "hero": {
-    "headline": "Sharpen Your Mind, Naturally",
-    "subheadline": "Clinically-backed, ARTG-listed cognitive supplements made from nature's finest ingredients. No artificial preservatives or additives. 100% Vegan. Made in Australia.",
-    "ctaText": "Shop Brain Boost 1000",
+    "headline": "Unlock Your Mind's Full Potential",
+    "subheadline": "Premium, science-backed cognitive supplements made with 100% natural ingredients. ARTG listed. Vegan. Made in Australia.",
+    "ctaText": "Shop Now",
     "ctaLink": "/product",
-    "secondaryCtaText": "Take the Quiz",
+    "secondaryCtaText": "Discover Your Wellness Plan",
     "secondaryCtaLink": "/quiz",
     "backgroundImage": "/images/hero-bg.jpg"
   },
+  "categories": [
+    {
+      "icon": "brain",
+      "title": "Focus",
+      "description": "Sharpen concentration and mental clarity",
+      "link": "/product"
+    },
+    {
+      "icon": "sparkles",
+      "title": "Memory",
+      "description": "Support recall and cognitive function",
+      "link": "/product"
+    },
+    {
+      "icon": "shield",
+      "title": "Stress Relief",
+      "description": "Natural adaptogens for calm and balance",
+      "link": "/product"
+    },
+    {
+      "icon": "heart",
+      "title": "Energy",
+      "description": "Combat mental fatigue naturally",
+      "link": "/product"
+    },
+    {
+      "icon": "leaf",
+      "title": "Sleep",
+      "description": "Rest better, think clearer",
+      "link": "/product"
+    }
+  ],
   "features": [
     {
       "icon": "leaf",
@@ -67,6 +104,30 @@
       }
     ]
   },
+  "wellness": {
+    "headline": "Wellness Hub",
+    "subheadline": "Expert tips and insights for your cognitive health journey.",
+    "articles": [
+      {
+        "title": "5 Natural Ways to Beat Brain Fog",
+        "excerpt": "Discover evidence-based strategies to clear mental haze and boost daily performance.",
+        "category": "Cognitive Health",
+        "link": "/quiz"
+      },
+      {
+        "title": "The Science Behind Adaptogens",
+        "excerpt": "Learn how natural adaptogens like Rhodiola Rosea help your body manage stress.",
+        "category": "Ingredients",
+        "link": "/product"
+      },
+      {
+        "title": "Building Better Focus Habits",
+        "excerpt": "Simple lifestyle changes that can dramatically improve your concentration.",
+        "category": "Lifestyle",
+        "link": "/quiz"
+      }
+    ]
+  },
   "testimonials": [
     {
       "name": "Sarah M.",
@@ -87,21 +148,52 @@
       "text": "Finally, a supplement that's ARTG listed and actually works! I feel confident knowing it's made in Australia with real quality standards. My memory has improved noticeably in just a month."
     }
   ],
+  "newsletter": {
+    "headline": "Join the Neurotonics Community",
+    "subheadline": "Get exclusive wellness tips, special offers, and the latest cognitive health research delivered to your inbox.",
+    "placeholder": "Enter your email address",
+    "buttonText": "Subscribe"
+  },
   "footer": {
     "about": "Neurotonics is Australia's trusted brand for natural cognitive supplements. Our products are ARTG listed, vegan, and free from artificial preservatives and additives.",
     "contactEmail": "hello@neurotonics.com.au",
     "contactPhone": "1300 NEURO (1300 638 76)",
     "copyright": "© 2026 Neurotonics. All rights reserved.",
     "disclaimer": "Always read the label and follow the directions for use. Supplements should not replace a balanced diet. If symptoms persist, talk to your health professional.",
+    "certifications": [
+      "ARTG Listed",
+      "100% Vegan",
+      "Made in Australia",
+      "GMP Certified"
+    ],
     "socialLinks": {
       "instagram": "https://instagram.com/neurotonics",
       "facebook": "https://facebook.com/neurotonics",
       "twitter": "https://twitter.com/neurotonics"
+    },
+    "links": {
+      "company": [
+        { "label": "About Us", "href": "/" },
+        { "label": "Our Story", "href": "/" },
+        { "label": "Science & Research", "href": "/" },
+        { "label": "Sustainability", "href": "/" }
+      ],
+      "support": [
+        { "label": "Contact Us", "href": "/" },
+        { "label": "FAQs", "href": "/product" },
+        { "label": "Shipping & Returns", "href": "/" },
+        { "label": "Privacy Policy", "href": "/" }
+      ],
+      "shop": [
+        { "label": "Brain Boost 1000", "href": "/product" },
+        { "label": "Find Your Solution", "href": "/quiz" },
+        { "label": "View Cart", "href": "/cart" }
+      ]
     }
   },
   "navigation": [
-    { "label": "Home", "href": "/" },
-    { "label": "Brain Boost 1000", "href": "/product" },
-    { "label": "Find Your Solution", "href": "/quiz" }
+    { "label": "Shop", "href": "/product" },
+    { "label": "Wellness Quiz", "href": "/quiz" },
+    { "label": "About", "href": "/" }
   ]
 }
