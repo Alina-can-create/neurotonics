@@ -3,11 +3,11 @@
 @theme inline {
   --color-background: #ffffff;
   --color-foreground: #1a1a2e;
-  --color-brand-primary: #c73c2e;
-  --color-brand-primary-light: #fef2f0;
-  --color-brand-primary-dark: #a32a1e;
-  --color-brand-warm: #e8722a;
-  --color-brand-warm-light: #fff7ed;
+  --color-brand-primary: #2563eb;
+  --color-brand-primary-light: #eff6ff;
+  --color-brand-primary-dark: #1d4ed8;
+  --color-brand-warm: #3b82f6;
+  --color-brand-warm-light: #dbeafe;
   --color-brand-green: #2d8a4e;
   --color-brand-green-light: #ecfdf5;
   --color-brand-card: #ffffff;
@@ -41,5 +41,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #c73c2e;
+  background: #2563eb;
 }
