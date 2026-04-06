@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, copilot/update-layout-to-match-swisse]
   workflow_dispatch:
 
 permissions:
