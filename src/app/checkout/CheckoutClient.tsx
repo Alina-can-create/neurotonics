@@ -12,18 +12,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/lib/cart';
+import { loadShippingSelection, clearShippingSelection } from '@/lib/shippingState';
+import type { ShippingSelectionState } from '@/lib/shippingState';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''
 );
 
-interface ShippingResult {
-  zone: string;
-  fee: number;
-  estimatedDays: string;
-}
-
-function CheckoutForm({ shipping }: { shipping: ShippingResult | null }) {
+function CheckoutForm({ shippingState }: { shippingState: ShippingSelectionState | null }) {
   const stripe = useStripe();
   const elements = useElements();
   const { clearCart } = useCart();
@@ -49,6 +45,7 @@ function CheckoutForm({ shipping }: { shipping: ShippingResult | null }) {
       setMessage(error.message || 'An unexpected error occurred.');
     } else {
       clearCart();
+      clearShippingSelection();
     }
 
     setIsProcessing(false);
@@ -66,14 +63,38 @@ function CheckoutForm({ shipping }: { shipping: ShippingResult | null }) {
         />
       </div>
 
-      {shipping && (
+      {shippingState && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">Delivery</h2>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">{shipping.zone}</span>
-            <span className="text-brand-primary">${shipping.fee.toFixed(2)} AUD</span>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-semibold text-gray-900">Delivery</h2>
+            <Link href="/cart" className="text-xs text-brand-primary hover:underline">
+              Change
+            </Link>
           </div>
-          <p className="text-gray-500 text-xs mt-1">{shipping.estimatedDays}</p>
+          <div className="flex items-center justify-between text-sm">
+            <div>
+              <p className="text-gray-900 font-medium">{shippingState.selectedOption.name}</p>
+              <p className="text-gray-500 text-xs mt-0.5">{shippingState.selectedOption.estimatedDays}</p>
+              {shippingState.postcode && (
+                <p className="text-gray-400 text-xs mt-0.5">Postcode: {shippingState.postcode}</p>
+              )}
+            </div>
+            <span className={`font-semibold ${shippingState.selectedOption.fee === 0 ? 'text-green-600' : 'text-brand-primary'}`}>
+              {shippingState.selectedOption.fee === 0 ? 'FREE' : `$${shippingState.selectedOption.fee.toFixed(2)} AUD`}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {!shippingState && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 flex items-start gap-2">
+          <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>
+            No shipping option selected.{' '}
+            <Link href="/cart" className="underline font-medium">Go back to cart</Link> to choose delivery.
+          </span>
         </div>
       )}
 
@@ -134,41 +155,34 @@ function EmptyCartView() {
   );
 }
 
-function CheckoutContent({ postcode }: { postcode: string | null }) {
+function CheckoutContent() {
   const { items, subtotal } = useCart();
   const [clientSecret, setClientSecret] = useState('');
-  const [shipping, setShipping] = useState<ShippingResult | null>(null);
+  const [shippingState, setShippingState] = useState<ShippingSelectionState | null>(null);
   const [error, setError] = useState('');
   const [initialized, setInitialized] = useState(false);
 
-  // Validate postcode format (4-digit Australian postcode)
-  const validPostcode = postcode && /^\d{4}$/.test(postcode) ? postcode : null;
-
-  const total = subtotal + (shipping?.fee || 0);
+  const shippingFee = shippingState?.selectedOption?.fee ?? 0;
+  const total = subtotal + shippingFee;
 
   const initialize = useCallback(async () => {
     if (initialized) return;
     setInitialized(true);
 
-    let shippingData: ShippingResult | null = null;
+    const saved = loadShippingSelection();
+    setShippingState(saved);
 
-    if (validPostcode) {
-      try {
-        const { calculateShipping } = await import('@/lib/shipping');
-        const data = calculateShipping(validPostcode);
-        shippingData = data;
-        setShipping(data);
-      } catch {
-        console.error('Shipping calculation failed during checkout initialization');
-      }
-    }
-
-    const amount = subtotal + (shippingData?.fee || 0);
+    const amount = subtotal + (saved?.selectedOption?.fee ?? 0);
     try {
       const res = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount, shipping: shippingData }),
+        body: JSON.stringify({
+          amount,
+          shipping: saved
+            ? { zone: saved.selectedOption.name, fee: saved.selectedOption.fee }
+            : null,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -179,7 +193,7 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
     } catch {
       setError('Failed to initialize payment. Please try again.');
     }
-  }, [initialized, validPostcode, subtotal]);
+  }, [initialized, subtotal]);
 
   return (
     <main className="bg-white min-h-screen">
@@ -220,7 +234,7 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
                   },
                 }}
               >
-                <CheckoutForm shipping={shipping} />
+                <CheckoutForm shippingState={shippingState} />
               </Elements>
             ) : !error ? (
               <div className="flex items-center justify-center py-16">
@@ -271,10 +285,19 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
                   <span>Subtotal</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
-                {shipping && (
-                  <div className="flex justify-between text-gray-600">
-                    <span>Shipping</span>
-                    <span>${shipping.fee.toFixed(2)}</span>
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping</span>
+                  {shippingState ? (
+                    <span className={shippingFee === 0 ? 'text-green-600 font-medium' : ''}>
+                      {shippingFee === 0 ? 'FREE' : `$${shippingFee.toFixed(2)}`}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 italic">not selected</span>
+                  )}
+                </div>
+                {shippingState && (
+                  <div className="text-gray-400 text-xs">
+                    {shippingState.selectedOption.name} · {shippingState.selectedOption.estimatedDays}
                   </div>
                 )}
                 <div className="flex justify-between text-gray-900 font-semibold text-base pt-2 border-t border-gray-200">
@@ -302,7 +325,6 @@ export default function CheckoutClient() {
   const { items } = useCart();
 
   const isSuccess = searchParams.get('success') === 'true';
-  const postcode = searchParams.get('postcode');
 
   if (isSuccess) {
     return <SuccessView />;
@@ -312,5 +334,5 @@ export default function CheckoutClient() {
     return <EmptyCartView />;
   }
 
-  return <CheckoutContent postcode={postcode} />;
+  return <CheckoutContent />;
 }

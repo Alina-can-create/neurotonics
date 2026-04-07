@@ -5,19 +5,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/lib/cart';
 import productContent from '@/content/product.json';
-
-interface ShippingResult {
-  zone: string;
-  fee: number;
-  estimatedDays: string;
-}
+import shippingContent from '@/content/shipping.json';
+import type { ShippingOption } from '@/lib/shipping';
 
 export default function ProductClient() {
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'description' | 'ingredients' | 'faq'>('description');
   const [postcode, setPostcode] = useState('');
-  const [shipping, setShipping] = useState<ShippingResult | null>(null);
+  const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([]);
   const [shippingError, setShippingError] = useState('');
   const [shippingLoading, setShippingLoading] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -39,12 +35,12 @@ export default function ProductClient() {
     if (!postcode.trim()) return;
     setShippingLoading(true);
     setShippingError('');
-    setShipping(null);
+    setShippingOptions([]);
 
     try {
-      const { calculateShipping } = await import('@/lib/shipping');
-      const data = calculateShipping(postcode.trim());
-      setShipping(data);
+      const { getShippingOptions } = await import('@/lib/shipping');
+      const options = getShippingOptions(postcode.trim(), 'AU', productContent.price * quantity);
+      setShippingOptions(options);
     } catch {
       setShippingError('Failed to calculate shipping. Please try again.');
     } finally {
@@ -131,6 +127,16 @@ export default function ProductClient() {
               <span className="text-gray-500 text-lg">AUD</span>
             </div>
 
+            {/* Free shipping teaser */}
+            {shippingContent.freeShippingThreshold && (
+              <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Free shipping on orders over ${shippingContent.freeShippingThreshold} AUD (Australia)
+              </div>
+            )}
+
             {/* Supply info */}
             <div className="flex items-center space-x-4 text-sm text-gray-500">
               <span className="flex items-center space-x-1">
@@ -197,12 +203,13 @@ export default function ProductClient() {
 
             {/* Shipping Calculator */}
             <div className="pt-4 border-t border-gray-200">
-              <h3 className="text-sm font-medium text-gray-600 mb-3">Calculate Delivery Fee</h3>
+              <h3 className="text-sm font-medium text-gray-600 mb-3">Estimate Delivery (Australia)</h3>
               <div className="flex space-x-2">
                 <input
                   type="text"
                   value={postcode}
                   onChange={(e) => setPostcode(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                  onKeyDown={(e) => e.key === 'Enter' && handleShippingCalculation()}
                   placeholder="Enter postcode (e.g. 2000)"
                   maxLength={4}
                   className="flex-1 px-4 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-primary transition-colors"
@@ -210,23 +217,39 @@ export default function ProductClient() {
                 <button
                   onClick={handleShippingCalculation}
                   disabled={shippingLoading || postcode.length !== 4}
-                  className="px-6 py-2.5 bg-brand-primary-light text-brand-primary border border-brand-primary/30 rounded-lg hover:bg-brand-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+                  className="px-6 py-2.5 bg-brand-primary-light text-brand-primary border border-brand-primary/30 rounded-lg hover:bg-brand-primary/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
                 >
-                  {shippingLoading ? 'Calculating...' : 'Calculate'}
+                  {shippingLoading ? 'Calculating…' : 'Calculate'}
                 </button>
               </div>
               {shippingError && (
                 <p className="mt-2 text-red-600 text-sm">{shippingError}</p>
               )}
-              {shipping && (
-                <div className="mt-3 p-3 bg-brand-primary-light border border-brand-primary/20 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="text-gray-900 text-sm font-medium">{shipping.zone}</p>
-                      <p className="text-gray-500 text-xs">{shipping.estimatedDays}</p>
+              {shippingOptions.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {shippingOptions.map((option) => (
+                    <div
+                      key={option.id}
+                      className={`p-3 rounded-lg border flex items-center justify-between ${
+                        option.recommended
+                          ? 'border-brand-primary/30 bg-brand-primary-light'
+                          : 'border-gray-200 bg-white'
+                      }`}
+                    >
+                      <div>
+                        <p className="text-gray-900 text-sm font-medium">
+                          {option.name}
+                          {option.recommended && (
+                            <span className="ml-2 text-xs text-brand-primary">(Recommended)</span>
+                          )}
+                        </p>
+                        <p className="text-gray-500 text-xs">{option.estimatedDays}</p>
+                      </div>
+                      <p className={`font-semibold text-sm ${option.fee === 0 ? 'text-green-600' : 'text-brand-primary'}`}>
+                        {option.fee === 0 ? 'FREE' : `$${option.fee.toFixed(2)} AUD`}
+                      </p>
                     </div>
-                    <p className="text-brand-primary font-semibold">${shipping.fee.toFixed(2)} AUD</p>
-                  </div>
+                  ))}
                 </div>
               )}
             </div>

@@ -1,41 +1,112 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/lib/cart';
+import { saveShippingSelection, loadShippingSelection } from '@/lib/shippingState';
+import type { ShippingOption } from '@/lib/shipping';
+import shippingContent from '@/content/shipping.json';
 
-interface ShippingResult {
-  zone: string;
-  fee: number;
-  estimatedDays: string;
-}
+const COUNTRIES = [
+  { code: 'AU', name: 'Australia' },
+  { code: 'NZ', name: 'New Zealand' },
+  { code: 'US', name: 'United States' },
+  { code: 'GB', name: 'United Kingdom' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'SG', name: 'Singapore' },
+  { code: 'OTHER', name: 'Other country' },
+];
 
 export default function CartClient() {
   const { items, updateQuantity, removeItem, subtotal } = useCart();
+
+  const [country, setCountry] = useState('AU');
   const [postcode, setPostcode] = useState('');
-  const [shipping, setShipping] = useState<ShippingResult | null>(null);
+  const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([]);
+  const [selectedOptionId, setSelectedOptionId] = useState('');
   const [shippingError, setShippingError] = useState('');
   const [shippingLoading, setShippingLoading] = useState(false);
+  const [locationCalculated, setLocationCalculated] = useState(false);
+  const [calculatedAtSubtotal, setCalculatedAtSubtotal] = useState<number | null>(null);
 
-  const handleShippingCalculation = async () => {
-    if (!postcode.trim()) return;
-    setShippingLoading(true);
-    setShippingError('');
-    setShipping(null);
+  const selectedOption = shippingOptions.find((o) => o.id === selectedOptionId) ?? null;
+  const shippingFee = selectedOption?.fee ?? 0;
+  const total = subtotal + shippingFee;
+  const canCheckout = locationCalculated && !!selectedOptionId;
+  const shippingOutdated = calculatedAtSubtotal !== null && calculatedAtSubtotal !== subtotal;
+  const freeThreshold = shippingContent.freeShippingThreshold;
+  const amountToFree = freeThreshold ? Math.max(0, freeThreshold - subtotal) : 0;
 
-    try {
-      const { calculateShipping } = await import('@/lib/shipping');
-      const data = calculateShipping(postcode.trim());
-      setShipping(data);
-    } catch {
-      setShippingError('Failed to calculate shipping.');
-    } finally {
-      setShippingLoading(false);
+  const runCalculation = useCallback(
+    async (pc: string, ct: string, st: number, savedOptionId?: string) => {
+      setShippingLoading(true);
+      setShippingError('');
+      try {
+        const { getShippingOptions } = await import('@/lib/shipping');
+        const options = getShippingOptions(pc, ct, st);
+        setShippingOptions(options);
+        setLocationCalculated(true);
+        setCalculatedAtSubtotal(st);
+
+        const recommended = options.find((o) => o.recommended) ?? options[0];
+        const toSelect = savedOptionId
+          ? (options.find((o) => o.id === savedOptionId) ?? recommended)
+          : recommended;
+        if (toSelect) {
+          setSelectedOptionId(toSelect.id);
+          saveShippingSelection({ postcode: pc, country: ct, selectedOptionId: toSelect.id, selectedOption: toSelect });
+        }
+      } catch {
+        setShippingError('Failed to calculate shipping. Please try again.');
+      } finally {
+        setShippingLoading(false);
+      }
+    },
+    []
+  );
+
+  // Restore saved shipping on mount
+  useEffect(() => {
+    const saved = loadShippingSelection();
+    if (!saved) return;
+    setCountry(saved.country ?? 'AU');
+    setPostcode(saved.postcode ?? '');
+    void runCalculation(saved.postcode ?? '', saved.country ?? 'AU', subtotal, saved.selectedOptionId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleCalculate = () => {
+    if (country !== 'AU') {
+      void runCalculation('', country, subtotal);
+      return;
+    }
+    if (!/^\d{4}$/.test(postcode)) {
+      setShippingError('Please enter a valid 4-digit Australian postcode.');
+      return;
+    }
+    void runCalculation(postcode, country, subtotal);
+  };
+
+  const handleSelectOption = (optionId: string) => {
+    setSelectedOptionId(optionId);
+    const option = shippingOptions.find((o) => o.id === optionId);
+    if (option) {
+      saveShippingSelection({ postcode, country, selectedOptionId: optionId, selectedOption: option });
     }
   };
 
-  const total = subtotal + (shipping?.fee || 0);
+  const handleCountryChange = (newCountry: string) => {
+    setCountry(newCountry);
+    setShippingOptions([]);
+    setSelectedOptionId('');
+    setLocationCalculated(false);
+    setShippingError('');
+    setCalculatedAtSubtotal(null);
+    if (newCountry !== 'AU') {
+      void runCalculation('', newCountry, subtotal);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -63,6 +134,22 @@ export default function CartClient() {
     <main className="bg-white min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+
+        {/* Free shipping progress banner */}
+        {freeThreshold && (
+          <div className={`mb-6 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 ${
+            subtotal >= freeThreshold
+              ? 'bg-green-50 text-green-700 border border-green-200'
+              : 'bg-brand-primary-light text-brand-primary border border-brand-primary/20'
+          }`}>
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            {subtotal >= freeThreshold
+              ? 'You qualify for free shipping!'
+              : `Add $${amountToFree.toFixed(2)} more to get free shipping (Australia)`}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
@@ -127,37 +214,126 @@ export default function CartClient() {
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
 
-                {/* Shipping Calculator */}
+                {/* Shipping & Delivery section */}
                 <div className="pt-3 border-t border-gray-200">
-                  <p className="text-gray-500 text-xs mb-2">Calculate delivery fee:</p>
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={postcode}
-                      onChange={(e) => setPostcode(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                      placeholder="Postcode"
-                      maxLength={4}
-                      className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-brand-primary"
-                    />
-                    <button
-                      onClick={handleShippingCalculation}
-                      disabled={shippingLoading || postcode.length !== 4}
-                      className="px-3 py-2 bg-brand-primary-light text-brand-primary border border-brand-primary/20 rounded-lg hover:bg-brand-primary-light transition-colors disabled:opacity-50 text-xs font-medium"
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                    </svg>
+                    Shipping &amp; Delivery
+                  </h3>
+
+                  {/* Country selector */}
+                  <div className="space-y-2 mb-3">
+                    <select
+                      value={country}
+                      onChange={(e) => handleCountryChange(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 text-xs focus:outline-none focus:border-brand-primary transition-colors"
+                      aria-label="Select country"
                     >
-                      {shippingLoading ? '...' : 'Go'}
-                    </button>
+                      {COUNTRIES.map((c) => (
+                        <option key={c.code} value={c.code}>{c.name}</option>
+                      ))}
+                    </select>
+
+                    {/* Postcode input — Australia only */}
+                    {country === 'AU' && (
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={postcode}
+                          onChange={(e) => setPostcode(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                          onKeyDown={(e) => e.key === 'Enter' && handleCalculate()}
+                          placeholder="Postcode (e.g. 2000)"
+                          maxLength={4}
+                          className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 text-xs focus:outline-none focus:border-brand-primary transition-colors"
+                          aria-label="Australian postcode"
+                        />
+                        <button
+                          onClick={handleCalculate}
+                          disabled={shippingLoading || postcode.length !== 4}
+                          className="px-3 py-2 bg-brand-primary-light text-brand-primary border border-brand-primary/20 rounded-lg hover:bg-brand-primary/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
+                        >
+                          {shippingLoading ? '…' : 'Go'}
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  {shippingError && <p className="mt-1 text-red-500 text-xs">{shippingError}</p>}
-                  {shipping && (
-                    <div className="mt-2 flex justify-between text-gray-600">
-                      <span>Shipping ({shipping.zone})</span>
-                      <span>${shipping.fee.toFixed(2)}</span>
+
+                  {shippingError && (
+                    <p className="text-red-500 text-xs mb-2" role="alert">{shippingError}</p>
+                  )}
+
+                  {shippingOutdated && (
+                    <p className="text-amber-600 text-xs mb-2">
+                      Cart updated —{' '}
+                      <button onClick={handleCalculate} className="underline font-medium">
+                        recalculate shipping
+                      </button>
+                    </p>
+                  )}
+
+                  {/* Shipping option cards */}
+                  {shippingOptions.length > 0 && (
+                    <div className="space-y-2" role="radiogroup" aria-label="Shipping options">
+                      {shippingOptions.map((option) => (
+                        <button
+                          key={option.id}
+                          role="radio"
+                          aria-checked={selectedOptionId === option.id}
+                          onClick={() => handleSelectOption(option.id)}
+                          className={`w-full flex items-start gap-2.5 p-3 rounded-xl border text-left transition-all duration-200 ${
+                            selectedOptionId === option.id
+                              ? 'border-brand-primary bg-brand-primary-light shadow-sm'
+                              : 'border-gray-200 hover:border-brand-primary/40 hover:bg-gray-50'
+                          }`}
+                        >
+                          {/* Radio indicator */}
+                          <div
+                            className={`mt-0.5 w-3.5 h-3.5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                              selectedOptionId === option.id ? 'border-brand-primary' : 'border-gray-300'
+                            }`}
+                          >
+                            {selectedOptionId === option.id && (
+                              <div className="w-1.5 h-1.5 rounded-full bg-brand-primary" />
+                            )}
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="text-gray-900 font-medium text-xs leading-tight">
+                                {option.name}
+                                {option.recommended && option.id !== 'free' && (
+                                  <span className="ml-1.5 text-brand-primary text-xs">(Recommended)</span>
+                                )}
+                              </span>
+                              <span className={`font-semibold text-xs flex-shrink-0 ${option.fee === 0 ? 'text-green-600' : 'text-gray-900'}`}>
+                                {option.fee === 0 ? 'FREE' : `$${option.fee.toFixed(2)}`}
+                              </span>
+                            </div>
+                            <p className="text-gray-500 text-xs mt-0.5">{option.estimatedDays}</p>
+                          </div>
+
+                          {option.badge && (
+                            <span className="text-xs font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded-md flex-shrink-0">
+                              {option.badge}
+                            </span>
+                          )}
+                        </button>
+                      ))}
                     </div>
                   )}
-                  {shipping && (
-                    <p className="text-gray-500 text-xs mt-1">{shipping.estimatedDays}</p>
-                  )}
                 </div>
+
+                {/* Shipping cost line */}
+                {selectedOption && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>Shipping</span>
+                    <span className={selectedOption.fee === 0 ? 'text-green-600 font-medium' : ''}>
+                      {selectedOption.fee === 0 ? 'FREE' : `$${selectedOption.fee.toFixed(2)}`}
+                    </span>
+                  </div>
+                )}
 
                 <div className="pt-3 border-t border-gray-200 flex justify-between text-gray-900 font-semibold text-base">
                   <span>Total</span>
@@ -165,12 +341,30 @@ export default function CartClient() {
                 </div>
               </div>
 
-              <Link
-                href={`/checkout${shipping ? `?postcode=${postcode}` : ''}`}
-                className="block w-full mt-6 py-3.5 bg-brand-primary hover:bg-brand-primary-dark text-white font-semibold rounded-xl transition-all duration-300 text-center"
-              >
-                Proceed to Checkout
-              </Link>
+              {canCheckout ? (
+                <Link
+                  href="/checkout"
+                  className="block w-full mt-6 py-3.5 bg-brand-primary hover:bg-brand-primary-dark text-white font-semibold rounded-xl transition-all duration-300 text-center"
+                >
+                  Proceed to Checkout
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  title={country === 'AU' && !locationCalculated ? 'Enter your postcode to calculate shipping' : undefined}
+                  className="block w-full mt-6 py-3.5 bg-gray-300 text-gray-500 font-semibold rounded-xl cursor-not-allowed text-center"
+                >
+                  {country === 'AU' && !locationCalculated
+                    ? 'Enter postcode to continue'
+                    : 'Select a shipping option'}
+                </button>
+              )}
+
+              {!canCheckout && country === 'AU' && (
+                <p className="mt-2 text-center text-xs text-gray-400">
+                  Enter your postcode to calculate delivery options
+                </p>
+              )}
 
               <Link
                 href="/product"
