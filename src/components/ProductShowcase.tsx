@@ -132,21 +132,7 @@ export default function ProductShowcase() {
                 ))}
               </ul>
 
-              {/* Urgency / stock bar */}
-              <div className="glass-card rounded-xl px-4 py-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white/70 text-xs font-semibold">
-                    🔥 Only {UNITS_LEFT} units left — selling fast
-                  </span>
-                  <span className="text-white/40 text-xs">{STOCK_PERCENT}% sold</span>
-                </div>
-                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className="h-full shimmer-bar rounded-full"
-                    style={{ width: `${STOCK_PERCENT}%` }}
-                  />
-                </div>
-              </div>
+
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 pt-1">
