@@ -17,6 +17,7 @@ const COUNTRIES = [
   { code: 'SG', name: 'Singapore' },
   { code: 'OTHER', name: 'Other country' },
 ];
+const COUNTRY_CODES = new Set(COUNTRIES.map((c) => c.code));
 
 export default function CartClient() {
   const { items, updateQuantity, removeItem, subtotal } = useCart();
@@ -70,9 +71,12 @@ export default function CartClient() {
   useEffect(() => {
     const saved = loadShippingSelection();
     if (!saved) return;
-    setCountry(saved.country ?? 'AU');
-    setPostcode(saved.postcode ?? '');
-    void runCalculation(saved.postcode ?? '', saved.country ?? 'AU', subtotal, saved.selectedOptionId);
+    // Validate saved data before applying to avoid unexpected behaviour from tampered storage
+    const savedCountry = COUNTRY_CODES.has(saved.country) ? saved.country : 'AU';
+    const savedPostcode = /^\d{4}$/.test(saved.postcode) ? saved.postcode : '';
+    setCountry(savedCountry);
+    setPostcode(savedPostcode);
+    void runCalculation(savedPostcode, savedCountry, subtotal, saved.selectedOptionId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -351,7 +355,8 @@ export default function CartClient() {
               ) : (
                 <button
                   disabled
-                  title={country === 'AU' && !locationCalculated ? 'Enter your postcode to calculate shipping' : undefined}
+                  aria-disabled="true"
+                  aria-describedby="checkout-shipping-hint"
                   className="block w-full mt-6 py-3.5 bg-gray-300 text-gray-500 font-semibold rounded-xl cursor-not-allowed text-center"
                 >
                   {country === 'AU' && !locationCalculated
@@ -360,9 +365,11 @@ export default function CartClient() {
                 </button>
               )}
 
-              {!canCheckout && country === 'AU' && (
-                <p className="mt-2 text-center text-xs text-gray-400">
-                  Enter your postcode to calculate delivery options
+              {!canCheckout && (
+                <p id="checkout-shipping-hint" className="mt-2 text-center text-xs text-gray-400">
+                  {country === 'AU'
+                    ? 'Enter your postcode to calculate delivery options'
+                    : 'Select a shipping option to continue'}
                 </p>
               )}
 
