@@ -15,54 +15,86 @@ import Image from 'next/image';
 import siteContent from '@/content/site.json';
 import productContent from '@/content/product.json';
 
+const MAX_TILT_DEGREES = 8;
+
 export default function ParallaxHero() {
   const heroRef    = useRef<HTMLElement>(null);
   const bgRef      = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const imageRef   = useRef<HTMLDivElement>(null);
+  const tiltRef    = useRef<HTMLDivElement>(null);
 
   const { hero } = siteContent;
 
   useEffect(() => {
-    // Bail out if the user prefers reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let rafId: number | undefined;
+    // ── Scroll parallax ────────────────────────────────────────────
+    if (!reducedMotion) {
+      let rafId: number | undefined;
 
-    const onScroll = () => {
-      if (rafId !== undefined) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const scrollY     = window.scrollY;
-        const heroHeight  = heroRef.current?.offsetHeight ?? 0;
+      const onScroll = () => {
+        if (rafId !== undefined) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          const scrollY     = window.scrollY;
+          const heroHeight  = heroRef.current?.offsetHeight ?? 0;
 
-        // Only apply while the hero is visible
-        if (scrollY > heroHeight * 1.5) return;
+          if (scrollY > heroHeight * 1.5) return;
 
-        /* Background layer – slowest parallax (feels deepest) */
-        if (bgRef.current) {
-          bgRef.current.style.transform = `translateY(${scrollY * 0.4}px)`;
+          if (bgRef.current) {
+            bgRef.current.style.transform = `translateY(${scrollY * 0.4}px)`;
+          }
+
+          if (contentRef.current) {
+            const progress = Math.min(scrollY / (heroHeight * 0.75), 1);
+            contentRef.current.style.transform = `translateY(${scrollY * 0.15}px)`;
+            contentRef.current.style.opacity   = String(1 - progress);
+          }
+
+          if (imageRef.current) {
+            imageRef.current.style.transform = `translateY(${scrollY * 0.28}px)`;
+          }
+        });
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // ── Mouse-tracking tilt for product image ────────────────────
+      const heroEl = heroRef.current;
+
+      const onMouseMove = (e: MouseEvent) => {
+        const tiltEl = tiltRef.current;
+        if (!tiltEl || !heroEl) return;
+
+        const rect = heroEl.getBoundingClientRect();
+        const cx   = rect.left + rect.width  / 2;
+        const cy   = rect.top  + rect.height / 2;
+
+        const dx = (e.clientX - cx) / (rect.width  / 2); // –1 … 1
+        const dy = (e.clientY - cy) / (rect.height / 2); // –1 … 1
+
+        const rotX = (-dy * MAX_TILT_DEGREES).toFixed(2);
+        const rotY = ( dx * MAX_TILT_DEGREES).toFixed(2);
+
+        tiltEl.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      };
+
+      const onMouseLeave = () => {
+        if (tiltRef.current) {
+          tiltRef.current.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
         }
+      };
 
-        /* Content layer – very subtle drift + fade out */
-        if (contentRef.current) {
-          const progress = Math.min(scrollY / (heroHeight * 0.75), 1);
-          contentRef.current.style.transform = `translateY(${scrollY * 0.15}px)`;
-          contentRef.current.style.opacity   = String(1 - progress);
-        }
+      heroEl?.addEventListener('mousemove', onMouseMove);
+      heroEl?.addEventListener('mouseleave', onMouseLeave);
 
-        /* Image layer – mid-depth parallax */
-        if (imageRef.current) {
-          imageRef.current.style.transform = `translateY(${scrollY * 0.28}px)`;
-        }
-      });
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      if (rafId !== undefined) cancelAnimationFrame(rafId);
-    };
+      return () => {
+        window.removeEventListener('scroll', onScroll);
+        if (rafId !== undefined) cancelAnimationFrame(rafId);
+        heroEl?.removeEventListener('mousemove', onMouseMove);
+        heroEl?.removeEventListener('mouseleave', onMouseLeave);
+      };
+    }
   }, []);
 
   return (
@@ -75,20 +107,14 @@ export default function ParallaxHero() {
       <div
         ref={bgRef}
         className="absolute inset-0 parallax-layer"
-        /* Oversized so the parallax offset never shows bare edge */
         style={{ top: '-20%', height: '140%', willChange: 'transform' }}
         aria-hidden="true"
       >
-        {/* Base gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-[#0d1f6e] to-[#0a195a]" />
-
-        {/* Floating ambient orbs */}
         <div className="absolute top-[8%]  right-[12%] w-80  h-80  rounded-full bg-brand-primary/25 blur-3xl animate-float-slow" />
         <div className="absolute top-[55%] left-[6%]  w-56  h-56  rounded-full bg-brand-warm/20   blur-3xl animate-float-medium" />
         <div className="absolute top-[30%] right-[3%] w-36  h-36  rounded-full bg-[#3b5fc0]/15  blur-2xl animate-float-fast" />
         <div className="absolute bottom-[10%] right-[30%] w-24 h-24 rounded-full bg-brand-green/10 blur-2xl animate-float-medium" />
-
-        {/* Subtle grid texture */}
         <div
           className="absolute inset-0 opacity-[0.035]"
           style={{
@@ -110,14 +136,12 @@ export default function ParallaxHero() {
 
           {/* Text column */}
           <div>
-            {/* Badge */}
             <div className="animate-hero-badge-in" style={{ animationDelay: '0ms' }}>
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/20 mb-6 backdrop-blur-sm text-white/90 text-sm font-medium">
                 🧠 {siteContent.brand.tagline}
               </span>
             </div>
 
-            {/* Headline */}
             <h1
               className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.04] tracking-tight animate-hero-fade-up"
               style={{ animationDelay: '80ms' }}
@@ -125,7 +149,6 @@ export default function ParallaxHero() {
               {hero.headline}
             </h1>
 
-            {/* Subheadline */}
             <p
               className="text-lg sm:text-xl text-white/65 mb-8 leading-relaxed max-w-xl animate-hero-fade-up"
               style={{ animationDelay: '200ms' }}
@@ -133,14 +156,14 @@ export default function ParallaxHero() {
               {hero.subheadline}
             </p>
 
-            {/* CTAs */}
+            {/* CTAs with btn-glow */}
             <div
               className="flex flex-col sm:flex-row gap-4 animate-hero-fade-up"
               style={{ animationDelay: '320ms' }}
             >
               <Link
                 href={hero.ctaLink}
-                className="group px-8 py-4 bg-white text-brand-navy font-bold rounded-lg transition-all duration-300 text-center shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98]"
+                className="btn-glow group px-8 py-4 bg-white text-brand-navy font-bold rounded-lg transition-all duration-300 text-center shadow-xl hover:shadow-2xl hover:scale-[1.03] active:scale-[0.98]"
               >
                 {hero.ctaText}
                 <span className="ml-2 inline-block transition-transform duration-300 group-hover:translate-x-1">
@@ -149,7 +172,7 @@ export default function ParallaxHero() {
               </Link>
               <Link
                 href={hero.secondaryCtaLink}
-                className="px-8 py-4 border border-white/30 text-white hover:bg-white/10 font-semibold rounded-lg transition-all duration-300 text-center backdrop-blur-sm"
+                className="btn-glow px-8 py-4 border border-white/30 text-white hover:bg-white/10 font-semibold rounded-lg transition-all duration-300 text-center backdrop-blur-sm"
               >
                 {hero.secondaryCtaText}
               </Link>
@@ -180,8 +203,12 @@ export default function ParallaxHero() {
             style={{ willChange: 'transform' }}
             aria-hidden="true"
           >
-            <div className="relative w-[380px] h-[500px] animate-hero-fade-up" style={{ animationDelay: '160ms' }}>
-              {/* Glow behind the bottle */}
+            {/* tiltRef is the element that receives mouse-tracking rotation */}
+            <div
+              ref={tiltRef}
+              className="relative w-[380px] h-[500px] animate-hero-fade-up tilt-card"
+              style={{ animationDelay: '160ms', willChange: 'transform', transition: 'transform 0.15s ease-out' }}
+            >
               <div className="absolute inset-8 bg-gradient-to-br from-brand-primary/50 to-brand-warm/40 rounded-full blur-3xl" />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/30 to-transparent rounded-3xl" />
               <Image
@@ -210,3 +237,4 @@ export default function ParallaxHero() {
     </section>
   );
 }
+
