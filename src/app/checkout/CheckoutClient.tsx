@@ -220,7 +220,7 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
                    Apple Pay
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 font-medium">
-                  G Google Pay
+                  Google Pay
                 </span>
               </div>
               <p className="text-gray-400 text-xs">
@@ -322,7 +322,7 @@ function CheckoutContent({ postcode }: { postcode: string | null }) {
                 ) : (
                   <div className="flex justify-between text-gray-500 text-xs">
                     <span>Shipping</span>
-                    <span>Calculated at cart</span>
+                    <span>Calculated in cart</span>
                   </div>
                 )}
                 <div className="flex justify-between text-gray-900 font-semibold text-base pt-2 border-t border-gray-200">
