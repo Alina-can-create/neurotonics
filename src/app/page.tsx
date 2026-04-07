@@ -159,7 +159,7 @@ export default function Home() {
 
           <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-brand-border">
             <div className="grid lg:grid-cols-2 gap-0">
-              <div className="bg-gradient-to-br from-brand-primary-light to-white p-8 sm:p-12 flex items-center justify-center">
+              <div className="bg-white p-8 sm:p-12 flex items-center justify-center">
                 <Image
                   src={productContent.images[0].src}
                   alt={productContent.images[0].alt}
@@ -242,7 +242,7 @@ export default function Home() {
                 className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-8 lg:gap-16`}
               >
                 <div className="flex-1">
-                  <div className="w-full aspect-video rounded-2xl bg-gradient-to-br from-brand-primary-light to-white border border-brand-border flex items-center justify-center p-8">
+                  <div className="w-full aspect-video rounded-2xl bg-white border border-brand-border flex items-center justify-center p-8">
                     <Image
                       src={productContent.images[0].src}
                       alt={productContent.images[0].alt}

@@ -2,18 +2,18 @@
 
 @theme inline {
   --color-background: #ffffff;
-  --color-foreground: #1a1a2e;
-  --color-brand-primary: #2563eb;
-  --color-brand-primary-light: #eff6ff;
-  --color-brand-primary-dark: #1d4ed8;
-  --color-brand-warm: #3b82f6;
-  --color-brand-warm-light: #dbeafe;
+  --color-foreground: #111928;
+  --color-brand-primary: #0a195a;
+  --color-brand-primary-light: #e8ecf5;
+  --color-brand-primary-dark: #07123e;
+  --color-brand-warm: #1e3a8a;
+  --color-brand-warm-light: #dce3f5;
   --color-brand-green: #2d8a4e;
   --color-brand-green-light: #ecfdf5;
   --color-brand-card: #ffffff;
-  --color-brand-gray: #f7f7f5;
-  --color-brand-border: #e5e5e0;
-  --color-brand-navy: #1e293b;
+  --color-brand-gray: #f5f6f8;
+  --color-brand-border: #dde1ec;
+  --color-brand-navy: #111928;
 }
 
 html {
@@ -36,10 +36,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5c8;
+  background: #dde1ec;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2563eb;
+  background: #0a195a;
 }
