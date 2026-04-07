@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/lib/cart';
 import productContent from '@/content/product.json';
+import { withBasePath } from '@/lib/basePath';
 
 interface ShippingResult {
   zone: string;
@@ -30,7 +31,7 @@ export default function ProductClient() {
       id: productContent.slug,
       name: productContent.name,
       price: productContent.price,
-      image: productContent.images[0].src,
+      image: withBasePath(productContent.images[0].src),
     }, quantity);
     router.push('/checkout');
   };
@@ -69,7 +70,7 @@ export default function ProductClient() {
           <div className="space-y-4">
             <div className="aspect-square rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden p-6">
               <Image
-                src={productContent.images[activeImageIndex]?.src || productContent.images[0].src}
+                src={withBasePath(productContent.images[activeImageIndex]?.src || productContent.images[0].src)}
                 alt={productContent.images[activeImageIndex]?.alt || productContent.name}
                 width={500}
                 height={500}
@@ -93,7 +94,7 @@ export default function ProductClient() {
                     aria-label={`View ${image.alt}`}
                   >
                     <Image
-                      src={image.src}
+                      src={withBasePath(image.src)}
                       alt={image.alt}
                       width={80}
                       height={80}

@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import productContent from '@/content/product.json';
+import { withBasePath } from '@/lib/basePath';
 
 const keyIngredients = [
   { name: 'Turmeric',  emoji: '🌿' },
@@ -39,7 +40,7 @@ export default function ProductShowcase() {
                 <div className="absolute inset-8 bg-gradient-to-br from-brand-primary/60 to-brand-warm/50 rounded-full blur-3xl" />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/40 to-transparent rounded-3xl" />
                 <Image
-                  src={productContent.images[0].src}
+                  src={withBasePath(productContent.images[0].src)}
                   alt={productContent.images[0].alt}
                   width={380}
                   height={500}
