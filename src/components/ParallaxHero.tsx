@@ -14,6 +14,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import siteContent from '@/content/site.json';
 import productContent from '@/content/product.json';
+import { withBasePath } from '@/lib/basePath';
 
 const MAX_TILT_DEGREES = 8;
 
@@ -212,7 +213,7 @@ export default function ParallaxHero() {
               <div className="absolute inset-8 bg-gradient-to-br from-brand-primary/50 to-brand-warm/40 rounded-full blur-3xl" />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/30 to-transparent rounded-3xl" />
               <Image
-                src={productContent.images[0].src}
+                src={withBasePath(productContent.images[0].src)}
                 alt={productContent.images[0].alt}
                 width={380}
                 height={500}
