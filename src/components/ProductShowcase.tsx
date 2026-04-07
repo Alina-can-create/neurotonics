@@ -142,12 +142,7 @@ export default function ProductShowcase() {
                 >
                   Buy Now — ${productContent.price.toFixed(2)} {productContent.currency}
                 </Link>
-                <Link
-                  href="/product"
-                  className="px-6 py-4 border border-white/20 text-white/80 hover:bg-white/10 font-semibold rounded-xl transition-all duration-300 text-center text-sm backdrop-blur-sm"
-                >
-                  Learn More →
-                </Link>
+
               </div>
 
             </div>
