@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import siteContent from '@/content/site.json';
 import productContent from '@/content/product.json';
 
@@ -7,6 +6,8 @@ import productContent from '@/content/product.json';
 import ParallaxHero    from '@/components/ParallaxHero';
 import ScrollReveal    from '@/components/ScrollReveal';
 import ParallaxSection from '@/components/ParallaxSection';
+import StatsSection    from '@/components/StatsSection';
+import ProductShowcase from '@/components/ProductShowcase';
 
 /* ── Shared icon set ────────────────────────────────────────────── */
 function CategoryIcon({ icon }: { icon: string }) {
@@ -73,6 +74,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ━━━━ 2b. STATS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <StatsSection />
+
       {/* ━━━━ 3. SHOP BY BENEFIT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -110,92 +114,7 @@ export default function Home() {
       </section>
 
       {/* ━━━━ 4. FEATURED PRODUCT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="py-20 sm:py-28 bg-brand-gray">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <ScrollReveal animation="fade-up" className="flex items-end justify-between mb-12 flex-wrap gap-4">
-            <div>
-              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-brand-primary mb-2">
-                #1 Best Seller
-              </p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-navy tracking-tight">
-                The Cognitive Edge
-              </h2>
-            </div>
-            <Link
-              href="/product"
-              className="inline-flex items-center gap-2 text-brand-primary hover:text-brand-primary-dark font-semibold transition-colors text-sm"
-            >
-              View Full Details
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </ScrollReveal>
-
-          {/* Split card */}
-          <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-brand-border">
-            <div className="grid lg:grid-cols-2">
-
-              {/* Product image – slides in from left */}
-              <ScrollReveal animation="fade-right" className="bg-brand-gray p-10 sm:p-14 flex items-center justify-center min-h-[340px]">
-                <Image
-                  src={productContent.images[0].src}
-                  alt={productContent.images[0].alt}
-                  width={380}
-                  height={380}
-                  className="w-auto max-h-72 object-contain drop-shadow-xl"
-                />
-              </ScrollReveal>
-
-              {/* Copy – slides in from right */}
-              <ScrollReveal animation="fade-left" className="p-10 sm:p-14 flex flex-col justify-center">
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {productContent.badges.slice(0, 3).map((badge) => (
-                    <span
-                      key={badge}
-                      className="inline-flex items-center px-3 py-1 rounded-full bg-brand-green-light text-brand-green text-xs font-semibold tracking-wide"
-                    >
-                      {badge}
-                    </span>
-                  ))}
-                </div>
-
-                <h3 className="text-2xl sm:text-3xl font-bold text-brand-navy tracking-tight mb-3">
-                  {productContent.name}
-                </h3>
-                <p className="text-gray-500 mb-6 leading-relaxed">
-                  {productContent.shortDescription}
-                </p>
-
-                <div className="flex items-baseline gap-3 mb-8">
-                  <span className="text-4xl font-bold text-brand-primary">
-                    ${productContent.price}
-                  </span>
-                  <span className="text-gray-400 text-sm">
-                    {productContent.currency} · {productContent.supply}
-                  </span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Link
-                    href="/product"
-                    className="px-8 py-3.5 bg-brand-primary hover:bg-brand-primary-dark text-white font-bold rounded-xl transition-all duration-300 text-center shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    Shop Now
-                  </Link>
-                  <Link
-                    href="/product"
-                    className="px-8 py-3.5 border border-brand-border text-brand-navy hover:bg-brand-gray font-semibold rounded-xl transition-all duration-300 text-center"
-                  >
-                    Learn More
-                  </Link>
-                </div>
-              </ScrollReveal>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ProductShowcase />
 
       {/* ━━━━ 5. WHY NEUROTONICS – feature cards ━━━━━━━━━━━━━━━━━━ */}
       <section className="py-20 sm:py-28 bg-white">
@@ -216,8 +135,8 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
               <ScrollReveal key={index} animation="fade-up" delay={index * 80}>
-                <div className="group p-7 rounded-2xl bg-white border border-brand-border card-hover h-full">
-                  <div className="w-12 h-12 rounded-2xl bg-brand-primary-light flex items-center justify-center mb-5 text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-all duration-300">
+                <div className="group p-7 rounded-2xl bg-white border border-brand-border card-hover tilt-card h-full">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-primary-light to-brand-warm-light flex items-center justify-center mb-5 text-brand-primary group-hover:from-brand-primary group-hover:to-brand-warm group-hover:text-white transition-all duration-300">
                     <CategoryIcon icon={feature.icon} />
                   </div>
                   <h3 className="text-lg font-bold text-brand-navy mb-2 tracking-tight">
@@ -267,7 +186,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((testimonial, index) => (
               <ScrollReveal key={index} animation="fade-up" delay={index * 100}>
-                <div className="p-7 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm h-full flex flex-col">
+                <div className="glass-card p-7 rounded-2xl h-full flex flex-col">
                   <Stars rating={testimonial.rating} />
                   <p className="text-white/75 text-sm leading-relaxed mt-4 flex-1">
                     &ldquo;{testimonial.text}&rdquo;

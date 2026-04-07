@@ -194,3 +194,107 @@ body {
     box-shadow: none;
   }
 }
+
+/* ============================================================
+   Premium UI Utilities
+   ============================================================ */
+
+/* --- Glassmorphism card --- */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* --- Glow button effect --- */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.btn-glow:hover::after {
+  opacity: 1;
+}
+
+/* --- Pulse ring (for badges) --- */
+@keyframes pulse-ring {
+  0%   { transform: scale(1);    opacity: 0.6; }
+  100% { transform: scale(1.5);  opacity: 0;   }
+}
+.animate-pulse-ring {
+  position: relative;
+}
+.animate-pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid currentColor;
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+/* --- Shimmer loading bar --- */
+@keyframes shimmer-slide {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.shimmer-bar {
+  background: linear-gradient(90deg, #1e3a8a 0%, #3b5fc0 50%, #1e3a8a 100%);
+  background-size: 200% 100%;
+  animation: shimmer-slide 2.5s linear infinite;
+}
+
+/* --- Tilt effect container --- */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+/* --- Number counter font --- */
+.counter-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* --- Header transformation --- */
+.header-scrolled {
+  box-shadow: 0 4px 32px rgba(10, 25, 90, 0.10);
+}
+
+/* --- Gradient border --- */
+.gradient-border-top {
+  border-top: 1px solid;
+  border-image: linear-gradient(90deg, transparent, #1e3a8a, #0a195a, #1e3a8a, transparent) 1;
+}
+.gradient-border-bottom {
+  border-bottom: 1px solid;
+  border-image: linear-gradient(90deg, transparent, #1e3a8a, #0a195a, #1e3a8a, transparent) 1;
+}
+
+/* --- Reduced-motion overrides for new animations --- */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-ring::before {
+    animation: none;
+  }
+
+  .shimmer-bar {
+    animation: none;
+    background: #1e3a8a;
+  }
+
+  .tilt-card {
+    transition: none;
+  }
+
+  .btn-glow::after {
+    transition: none;
+  }
+}
