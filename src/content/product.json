@@ -24,34 +24,39 @@
   "supply": "30-day supply",
   "ingredients": [
     {
-      "name": "Bacopa Monnieri Extract",
-      "amount": "300mg",
+      "name": "Bacopa monnieri",
+      "amount": "50mg",
       "benefit": "Supports memory and cognitive function"
     },
     {
-      "name": "Lion's Mane Mushroom Extract",
-      "amount": "250mg",
-      "benefit": "Promotes nerve growth and brain health"
+      "name": "Salvia officinalis",
+      "amount": "75mg",
+      "benefit": "Enhances memory and concentration"
     },
     {
-      "name": "Ginkgo Biloba Extract",
-      "amount": "120mg",
-      "benefit": "Enhances blood flow to the brain"
-    },
-    {
-      "name": "Rhodiola Rosea Extract",
-      "amount": "200mg",
-      "benefit": "Reduces stress and mental fatigue"
-    },
-    {
-      "name": "Phosphatidylserine",
+      "name": "Curcuma longa",
       "amount": "100mg",
-      "benefit": "Supports cell membrane integrity"
+      "benefit": "Anti-inflammatory support for brain health"
     },
     {
-      "name": "Vitamin B12",
-      "amount": "500mcg",
-      "benefit": "Essential for nervous system function"
+      "name": "Rosmarinus officinalis",
+      "amount": "100mg",
+      "benefit": "Improves memory and mental clarity"
+    },
+    {
+      "name": "Nigella sativa",
+      "amount": "75mg",
+      "benefit": "Antioxidant support for cognitive function"
+    },
+    {
+      "name": "Ocimum tenuiflorum",
+      "amount": "50mg",
+      "benefit": "Reduces stress and supports mental wellbeing"
+    },
+    {
+      "name": "Paullinia cupana",
+      "amount": "100mg",
+      "benefit": "Boosts energy and mental alertness"
     }
   ],
   "stockPercent": 70,
