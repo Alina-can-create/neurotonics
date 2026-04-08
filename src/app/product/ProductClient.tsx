@@ -31,7 +31,7 @@ export default function ProductClient() {
       id: productContent.slug,
       name: productContent.name,
       price: productContent.price,
-      image: withBasePath(productContent.images[0].src),
+      image: productContent.images[0].src,
     }, quantity);
     router.push('/checkout');
   };
