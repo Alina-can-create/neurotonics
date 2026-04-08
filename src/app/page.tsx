@@ -169,7 +169,7 @@ export default function Home() {
           </ScrollReveal>
 
           {/* Category grid – staggered reveal */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             {categories.map((category, index) => (
               <ScrollReveal key={index} animation="fade-up" delay={index * 80}>
                 <Link
