@@ -101,7 +101,7 @@ export default function ParallaxHero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center overflow-hidden bg-brand-navy -mt-24 sm:-mt-28"
+      className="relative min-h-screen flex items-center overflow-hidden bg-[#0c1545] -mt-24 sm:-mt-28"
       aria-label="Hero"
     >
       {/* ── Layer 1: Parallax background ───────────────────────────── */}
@@ -111,7 +111,7 @@ export default function ParallaxHero() {
         style={{ top: '-20%', height: '140%', willChange: 'transform' }}
         aria-hidden="true"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-navy via-[#0d1f6e] to-[#0a195a]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0c1545] via-[#0a185e] to-[#07104d]" />
         <div className="absolute top-[8%]  right-[12%] w-80  h-80  rounded-full bg-brand-primary/25 blur-3xl animate-float-slow" />
         <div className="absolute top-[55%] left-[6%]  w-56  h-56  rounded-full bg-brand-warm/20   blur-3xl animate-float-medium" />
         <div className="absolute top-[30%] right-[3%] w-36  h-36  rounded-full bg-[#3b5fc0]/15  blur-2xl animate-float-fast" />
