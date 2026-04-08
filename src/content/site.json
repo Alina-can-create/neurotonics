@@ -137,7 +137,7 @@
     "about": "Neurotonics is Australia's trusted brand for natural cognitive supplements. Our products are ARTG listed, vegan, and free from artificial preservatives and additives.",
     "contactEmail": "hello@neurotonics.com.au",
     "contactPhone": "1300 NEURO (1300 638 76)",
-    "copyright": "© 2026 Neurotonics. All rights reserved.",
+    "copyright": "\u00a9 2026 Neurotonics. All rights reserved.",
     "disclaimer": "Always read the label and follow the directions for use. Supplements should not replace a balanced diet. If symptoms persist, talk to your health professional.",
     "certifications": [
       "ARTG Listed",
@@ -151,27 +151,37 @@
       "twitter": "https://twitter.com/neurotonics"
     },
     "links": {
-      "company": [
-        { "label": "About Us", "href": "/" },
-        { "label": "Our Story", "href": "/" },
-        { "label": "Science & Research", "href": "/" },
-        { "label": "Sustainability", "href": "/" }
-      ],
+      "company": [],
       "support": [
-        { "label": "Contact Us", "href": "/" },
-        { "label": "FAQs", "href": "/product" },
-        { "label": "Shipping & Returns", "href": "/" },
-        { "label": "Privacy Policy", "href": "/" }
+        {
+          "label": "Shipping & Returns",
+          "href": "/"
+        },
+        {
+          "label": "Privacy Policy",
+          "href": "/"
+        }
       ],
       "shop": [
-        { "label": "Brain Boost 1000", "href": "/product" },
-        { "label": "Find Your Solution", "href": "/quiz" },
-        { "label": "View Cart", "href": "/cart" }
+        {
+          "label": "Brain Boost 1000",
+          "href": "/product"
+        },
+        {
+          "label": "Find Your Solution",
+          "href": "/quiz"
+        }
       ]
     }
   },
   "navigation": [
-    { "label": "Shop", "href": "/product" },
-    { "label": "Wellness Quiz", "href": "/quiz" }
+    {
+      "label": "Shop",
+      "href": "/product"
+    },
+    {
+      "label": "Wellness Quiz",
+      "href": "/quiz"
+    }
   ]
 }
