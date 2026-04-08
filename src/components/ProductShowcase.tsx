@@ -22,7 +22,7 @@ const UNITS_LEFT    = productContent.unitsLeft;
 
 export default function ProductShowcase() {
   return (
-    <section className="relative py-20 sm:py-28 overflow-hidden bg-gradient-to-br from-brand-navy via-[#0d1f6e] to-[#0a195a]">
+    <section className="relative py-20 sm:py-28 overflow-hidden bg-gradient-to-br from-[#0d1f6e] via-[#0a195a] to-[#071440]">
       {/* Background orbs */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute top-[5%]  right-[8%]  w-80 h-80 rounded-full bg-brand-primary/20 blur-3xl" />
