@@ -231,6 +231,7 @@ function AccordionItem({ section, index }: { section: Section; index: number }) 
     <ScrollReveal animation="fade-up" delay={index * 40}>
       <div className="border border-brand-border rounded-xl overflow-hidden bg-white">
         <button
+          id={`heading-${section.id}`}
           type="button"
           onClick={() => setOpen((prev) => !prev)}
           aria-expanded={open}
@@ -260,7 +261,7 @@ function AccordionItem({ section, index }: { section: Section; index: number }) 
           id={`section-${section.id}`}
           role="region"
           aria-labelledby={`heading-${section.id}`}
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
         >
           <div className="px-6 pb-6 pt-1 text-gray-600 leading-relaxed text-sm sm:text-base border-t border-brand-border">
             {section.content}
