@@ -127,7 +127,7 @@ function randomNeuralPath(rng: () => number): THREE.Vector3[] {
 function seededRng(seed: number) {
   let s = seed;
   return () => {
-    s = (s * 16807 + 0) % 2147483647;
+    s = (s * 16807) % 2147483647;
     return (s - 1) / 2147483646;
   };
 }
