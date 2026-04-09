@@ -31,7 +31,7 @@ import Link from 'next/link';
 import siteContent from '@/content/site.json';
 
 /** Source URL for the hero brain illustration */
-const BRAIN_IMAGE_SRC =
+export const BRAIN_IMAGE_SRC =
   'https://github.com/user-attachments/assets/2e89f42d-2885-4121-a9bd-0d444bfa2384';
 
 // ── 3D scroll effect constants (degrees) ──────────────────────────────────
@@ -259,19 +259,17 @@ export default function BrainHero() {
           style={{ willChange: 'transform', transformStyle: 'preserve-3d' }}
           data-testid="brain-image-3d"
         >
-          {/* Layer 1: Blurred shadow-clone — simulates cast shadow / depth haze */}
+          {/* Layer 1: Blurred shadow-clone — CSS gradient simulates cast shadow / depth haze
+               (replaces a duplicate <Image> fetch; visually identical after blur-3xl) */}
           <div
-            className="absolute inset-0 scale-[1.12] blur-3xl opacity-35 pointer-events-none"
+            className="absolute inset-0 scale-[1.12] opacity-35 pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(ellipse 72% 66% at 52% 50%, rgba(128,60,215,0.95) 0%, rgba(75,100,235,0.7) 38%, rgba(28,58,200,0.3) 62%, transparent 78%)',
+              filter: 'blur(64px)',
+            }}
             aria-hidden="true"
-          >
-            <Image
-              src={BRAIN_IMAGE_SRC}
-              alt=""
-              fill
-              className="object-contain"
-              unoptimized
-            />
-          </div>
+          />
 
           {/* Layer 2: Outer pulsing halo glow */}
           <div

@@ -3,7 +3,7 @@ import siteContent from '@/content/site.json';
 import productContent from '@/content/product.json';
 
 // Client components for interactive/parallax effects
-import BrainHero       from '@/components/BrainHero';
+import BrainHero, { BRAIN_IMAGE_SRC } from '@/components/BrainHero';
 import ScrollReveal    from '@/components/ScrollReveal';
 import ParallaxSection from '@/components/ParallaxSection';
 import ProductShowcase from '@/components/ProductShowcase';
@@ -128,6 +128,16 @@ export default function Home() {
 
   return (
     <>
+      {/* ── Early resource hints — hoisted to <head> by Next.js ──────────
+           Preconnect to the GitHub CDN so the TCP+TLS handshake completes
+           before the browser reaches the hero Image preload link, shaving
+           100–300 ms off the first connection on cold loads.              */}
+      <link rel="preconnect" href="https://github.com" />
+      <link rel="dns-prefetch" href="https://github.com" />
+      {/* Preload the hero brain image at the highest priority so it starts
+          downloading during HTML parsing rather than after React hydration. */}
+      <link rel="preload" as="image" href={BRAIN_IMAGE_SRC} fetchpriority="high" />
+
       <HomeJsonLd />
       <main id="main-content">
 
