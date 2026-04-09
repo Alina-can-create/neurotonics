@@ -44,6 +44,13 @@ export const SCROLL_SCALE_MIN = 0.92; // scale at full hero scroll
 export const MOUSE_TILT_DESKTOP = 10; // max degrees on desktop
 export const MOUSE_TILT_MOBILE  = 4;  // max degrees on tablet
 
+/**
+ * How far the specular highlight shifts from centre (50%) when the mouse moves
+ * to the edge (dx/dy = ±1).  A value of 18 keeps the bright spot within the
+ * brain silhouette while still reading clearly as a moving light source.
+ */
+export const SPECULAR_SHIFT = 18; // pixels of specular displacement per unit tilt
+
 // ── Hero image responsive width/height sizes (px) ─────────────────────────
 // These are exported so tests can assert the image is "large".
 export const IMAGE_SIZE = {
@@ -94,9 +101,10 @@ export default function BrainHero() {
     const applySpecular = () => {
       if (!specRef.current || reducedMotion) return;
       const { dx, dy } = mouseRef.current;
-      // Specular moves opposite to tilt direction (light appears fixed in space)
-      const sx = 50 - dx * 18;
-      const sy = 38 - dy * 18;
+      // Specular moves opposite to tilt direction (light appears fixed in space).
+      // SPECULAR_SHIFT controls how far the bright spot travels per unit of tilt.
+      const sx = 50 - dx * SPECULAR_SHIFT;
+      const sy = 38 - dy * SPECULAR_SHIFT;
       specRef.current.style.background =
         `radial-gradient(ellipse 38% 32% at ${sx}% ${sy}%, rgba(160,210,255,0.12) 0%, transparent 70%)`;
     };

@@ -26,6 +26,7 @@ import {
   SCROLL_SCALE_MIN,
   MOUSE_TILT_DESKTOP,
   MOUSE_TILT_MOBILE,
+  SPECULAR_SHIFT,
 } from '../components/BrainHero';
 
 // ---------------------------------------------------------------------------
@@ -237,11 +238,11 @@ describe('BrainHero — specular highlight positioning', () => {
    * This simulates a fixed light source: as brain tilts right, lit face tilts away.
    */
   function specularX(dx: number): number {
-    return 50 - dx * 18;
+    return 50 - dx * SPECULAR_SHIFT;
   }
 
   function specularY(dy: number): number {
-    return 38 - dy * 18;
+    return 38 - dy * SPECULAR_SHIFT;
   }
 
   it('specular X decreases when mouse moves right (light-source illusion)', () => {
