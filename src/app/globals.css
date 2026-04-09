@@ -120,6 +120,31 @@ body {
 .animate-float-medium { animation: float-medium  7s ease-in-out infinite; animation-delay: -3s; }
 .animate-float-fast   { animation: float-fast    5s ease-in-out infinite; animation-delay: -1.5s; }
 
+/* --- Brain depth-pulse — outer halo breathes independently of levitation --- */
+@keyframes brain-depth-pulse {
+  0%, 100% { opacity: 0.20; transform: scale(1);    }
+  50%       { opacity: 0.35; transform: scale(1.07); }
+}
+
+.animate-brain-depth-pulse {
+  animation: brain-depth-pulse 7s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+/* --- Light-sweep — one-pass diagonal shimmer across the brain surface --- */
+@keyframes light-sweep {
+  0%   { transform: rotate(-30deg) translateX(-160%); opacity: 0;    }
+  8%   {                                               opacity: 1;    }
+  55%  {                                               opacity: 1;    }
+  65%  {                                               opacity: 0;    }
+  100% { transform: rotate(-30deg) translateX(160%);  opacity: 0;    }
+}
+
+.animate-light-sweep {
+  animation: light-sweep 14s ease-in-out infinite;
+  animation-delay: 4s;
+}
+
 /* --- Scroll indicator bounce --- */
 @keyframes scroll-bounce {
   0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.45; }
@@ -231,6 +256,8 @@ section[class*="bg-brand-navy"] *:focus-visible {
   .animate-float-medium,
   .animate-float-fast,
   .animate-brain-levitate,
+  .animate-brain-depth-pulse,
+  .animate-light-sweep,
   .animate-hero-fade-up,
   .animate-hero-badge-in,
   .animate-scroll-bounce,
