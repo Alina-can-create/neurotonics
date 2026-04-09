@@ -98,7 +98,7 @@ export default function BrainHero() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse 55% 65% at 72% 50%, rgba(0,60,180,0.18) 0%, transparent 70%)',
+            'radial-gradient(ellipse 55% 65% at 72% 50%, rgba(17,85,238,0.20) 0%, transparent 70%)',
         }}
         aria-hidden="true"
       />
