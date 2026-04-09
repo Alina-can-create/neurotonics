@@ -3,14 +3,15 @@
 /**
  * BrainCanvas — Premium Three.js WebGL brain visualisation
  *
- * Renders a bioluminescent 3D brain inspired by high-end neural-network visuals.
- * Features:
- *   • Dark solid brain mesh with pronounced gyri / sulci displacement
- *   • Multi-layer glowing wireframe overlay (simulates bloom without post-processing)
+ * Renders a bioluminescent 3D brain matching the reference image aesthetic:
+ *   • Dense cellular surface network via WireframeGeometry (shows all triangle edges)
+ *     → creates the fine, irregular cell-like mesh covering the brain surface
+ *   • Dark solid brain mesh as depth base — glowing network appears on top
+ *   • Multi-layer glowing edge wireframe overlay for outer halo/bloom
  *   • Dense surface neural-pathway tubes with additive blending
  *   • Ambient particle field mixing surface and orbital particles
  *   • Concentric halo planes for fake volumetric bloom
- *   • Scroll-driven rotation + "activation" lighting surge
+ *   • Scroll-driven rotation + "brain activation" lighting surge
  *   • Rhythmic pulse animation (idle heartbeat glow)
  *   • Mouse-tracking subtle tilt
  *   • Desktop: brain offset right so text occupies the left half
@@ -25,18 +26,19 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 /* ─── Configuration ──────────────────────────────────────────────────── */
 
-const BRAIN_RADIUS      = 1.3;
+const BRAIN_RADIUS      = 1.55;   // larger brain fills more of the viewport
 const PARTICLE_COUNT    = 900;
 const NEURAL_PATH_COUNT   = 130;
 // Viewport width above which the brain is offset right (aligns with text layout)
 const DESKTOP_BREAKPOINT_WIDTH = 860;
 
-// Electric blue / cyan bioluminescent palette
+// Electric blue / cyan bioluminescent palette — matching reference image
 const COL_DEEP_BLUE    = 0x001133;
 const COL_MID_BLUE     = 0x0044cc;
 const COL_BRIGHT_BLUE  = 0x0066ff;
 const COL_CYAN         = 0x00aaff;
 const COL_BRIGHT_CYAN  = 0x55ccff;
+const COL_ICE_BLUE     = 0xaaddff; // near-white bright cyan for hottest highlights
 
 /* ─── Helpers ────────────────────────────────────────────────────────── */
 
@@ -49,27 +51,32 @@ function brainDisplace(v: THREE.Vector3): number {
 
   // Major lobe shapes — low-frequency, high-amplitude waves
   let d = 0;
-  d += Math.sin(x * 8.0 + y * 5.0) * 0.048;
-  d += Math.cos(y * 7.0 + z * 6.0) * 0.040;
-  d += Math.sin(z * 9.0 + x * 4.0) * 0.034;
-  d += Math.cos(x * 6.0 + z * 7.0) * 0.028;
-  d += Math.sin(y * 5.0 + z * 4.5) * 0.022;
+  d += Math.sin(x * 8.0 + y * 5.0) * 0.055;
+  d += Math.cos(y * 7.0 + z * 6.0) * 0.048;
+  d += Math.sin(z * 9.0 + x * 4.0) * 0.042;
+  d += Math.cos(x * 6.0 + z * 7.0) * 0.036;
+  d += Math.sin(y * 5.0 + z * 4.5) * 0.028;
 
   // Frontal / parietal lobe division
-  d += Math.sin(z * 3.5) * 0.018;
+  d += Math.sin(z * 3.5) * 0.024;
 
   // Cerebellum — depression at rear-bottom
   const rearBottom = -z * 0.65 + -y * 0.55;
-  if (rearBottom > 0.3) d -= rearBottom * 0.055;
+  if (rearBottom > 0.3) d -= rearBottom * 0.070;
 
-  // Deep longitudinal fissure along the midline
-  d -= Math.exp(-x * x * 60) * 0.045;
+  // Deep longitudinal fissure along the midline — key for brain anatomy
+  d -= Math.exp(-x * x * 60) * 0.072;
 
-  // Fine sulci texture layers
-  d += Math.sin(x * 20 + y * 16 + z * 11) * 0.015;
-  d += Math.cos(x * 16 + y * 12 + z * 18) * 0.012;
-  d += Math.sin(x * 24 + z * 13 + y *  8) * 0.008;
-  d += Math.cos(y * 22 + z * 15 + x * 10) * 0.006;
+  // Secondary sulci — mid-frequency detail
+  d += Math.sin(x * 13 + y * 10 + z * 8)  * 0.026;
+  d += Math.cos(x * 11 + z * 9  + y * 12) * 0.022;
+
+  // Fine sulci texture layers — creates the micro-wrinkle pattern
+  d += Math.sin(x * 20 + y * 16 + z * 11) * 0.018;
+  d += Math.cos(x * 16 + y * 12 + z * 18) * 0.015;
+  d += Math.sin(x * 24 + z * 13 + y *  8) * 0.011;
+  d += Math.cos(y * 22 + z * 15 + x * 10) * 0.009;
+  d += Math.sin(x * 30 + y * 24 + z * 17) * 0.007;
 
   return d;
 }
@@ -175,7 +182,7 @@ export default function BrainCanvas({ className = '' }: Props) {
       0.1,
       100,
     );
-    camera.position.set(0, 0.1, 4.6);
+    camera.position.set(0, 0.1, 4.2);
 
     /* ── Lighting ─────────────────────────────────────────────────── */
 
@@ -184,22 +191,22 @@ export default function BrainCanvas({ className = '' }: Props) {
     scene.add(ambient);
 
     // Key — strong blue from upper-front
-    const keyLight = new THREE.PointLight(COL_BRIGHT_BLUE, 220, 28);
+    const keyLight = new THREE.PointLight(COL_BRIGHT_BLUE, 350, 28);
     keyLight.position.set(2, 3.5, 5);
     scene.add(keyLight);
 
     // Fill — cooler blue from the left
-    const fillLight = new THREE.PointLight(COL_MID_BLUE, 90, 22);
+    const fillLight = new THREE.PointLight(COL_MID_BLUE, 130, 22);
     fillLight.position.set(-4, 1, 2);
     scene.add(fillLight);
 
     // Rim / back — creates the strong halo seen in the reference image
-    const rimLight = new THREE.PointLight(COL_CYAN, 180, 22);
+    const rimLight = new THREE.PointLight(COL_CYAN, 280, 22);
     rimLight.position.set(0, 2, -4.5);
     scene.add(rimLight);
 
     // Top accent — pure cyan
-    const topLight = new THREE.PointLight(COL_BRIGHT_CYAN, 100, 20);
+    const topLight = new THREE.PointLight(COL_BRIGHT_CYAN, 160, 20);
     topLight.position.set(0, 5.5, 0);
     scene.add(topLight);
 
@@ -222,7 +229,7 @@ export default function BrainCanvas({ className = '' }: Props) {
       roughness:           0.5,
       metalness:           0.08,
       emissive:            new THREE.Color(0x001555),
-      emissiveIntensity:   1.0,
+      emissiveIntensity:   1.4,
       clearcoat:           0.9,
       clearcoatRoughness:  0.18,
     });
@@ -230,20 +237,55 @@ export default function BrainCanvas({ className = '' }: Props) {
     root.add(brainMesh);
 
     /* ─────────────────────────────────────────────────────────────── *
+     *  DENSE SURFACE WIREFRAME — the cellular network                  *
+     *  WireframeGeometry shows ALL triangle edges (not just prominent  *
+     *  ones), creating the fine irregular cell pattern seen in the     *
+     *  reference image. High detail = smaller, denser cells.           *
+     * ─────────────────────────────────────────────────────────────── */
+    const denseDetail  = isLowPerf ? 6 : 9;
+    const brainGeoWire = buildBrainGeometry(denseDetail);
+    const denseWireGeo = new THREE.WireframeGeometry(brainGeoWire);
+
+    // Primary dense surface — bright cyan cells
+    const denseWireMat = new THREE.LineBasicMaterial({
+      color:       COL_BRIGHT_CYAN,
+      transparent: true,
+      opacity:     0.48,
+      blending:    THREE.AdditiveBlending,
+      depthWrite:  false,
+    });
+    const denseSurface = new THREE.LineSegments(denseWireGeo, denseWireMat);
+    root.add(denseSurface);
+
+    // Second dense layer — slightly larger, ice-blue glow halo around each cell
+    const denseWireGeo2 = denseWireGeo.clone();
+    const denseWireMat2 = new THREE.LineBasicMaterial({
+      color:       COL_ICE_BLUE,
+      transparent: true,
+      opacity:     0.18,
+      blending:    THREE.AdditiveBlending,
+      depthWrite:  false,
+    });
+    const denseSurface2 = new THREE.LineSegments(denseWireGeo2, denseWireMat2);
+    denseSurface2.scale.setScalar(1.008);
+    root.add(denseSurface2);
+
+    /* ─────────────────────────────────────────────────────────────── *
      *  WIREFRAME GLOW LAYERS — three concentric edge sets              *
-     *  Together they simulate the bloom/glow of the reference image    *
+     *  EdgesGeometry only shows topology-defining edges, giving the    *
+     *  larger-scale glow halo / bloom silhouette effect                *
      * ─────────────────────────────────────────────────────────────── */
 
     // Shared medium-detail geometry for edge extraction (cheaper than HD)
     const brainGeoMD = buildBrainGeometry(isLowPerf ? 2 : 4);
-    // EdgesGeometry at 20° threshold: keeps only topology-defining edges
-    const edgesBase  = new THREE.EdgesGeometry(brainGeoMD, 20);
+    // EdgesGeometry at 15° threshold: keeps topology-defining edges
+    const edgesBase  = new THREE.EdgesGeometry(brainGeoMD, 15);
 
     // Layer 1 — bright inner lines (scale 1.0, highest opacity)
     const wireMat1 = new THREE.LineBasicMaterial({
-      color:       COL_BRIGHT_BLUE,
+      color:       COL_ICE_BLUE,
       transparent: true,
-      opacity:     0.70,
+      opacity:     0.90,
       blending:    THREE.AdditiveBlending,
       depthWrite:  false,
     });
@@ -255,7 +297,7 @@ export default function BrainCanvas({ className = '' }: Props) {
     const wireMat2  = new THREE.LineBasicMaterial({
       color:       COL_CYAN,
       transparent: true,
-      opacity:     0.28,
+      opacity:     0.55,
       blending:    THREE.AdditiveBlending,
       depthWrite:  false,
     });
@@ -263,17 +305,17 @@ export default function BrainCanvas({ className = '' }: Props) {
     wire2.scale.setScalar(1.012);
     root.add(wire2);
 
-    // Layer 3 — outermost soft haze (scale 1.028, deep blue)
+    // Layer 3 — outermost soft haze (scale 1.030, deep blue)
     const edgesGeo3 = edgesBase.clone();
     const wireMat3  = new THREE.LineBasicMaterial({
       color:       COL_MID_BLUE,
       transparent: true,
-      opacity:     0.13,
+      opacity:     0.28,
       blending:    THREE.AdditiveBlending,
       depthWrite:  false,
     });
     const wire3 = new THREE.LineSegments(edgesGeo3, wireMat3);
-    wire3.scale.setScalar(1.028);
+    wire3.scale.setScalar(1.030);
     root.add(wire3);
 
     /* ─────────────────────────────────────────────────────────────── *
@@ -477,23 +519,27 @@ export default function BrainCanvas({ className = '' }: Props) {
       const slowPulse = (Math.sin(elapsed * 0.65) * 0.5 + 0.5);
 
       /* ── Brain core emissive glow ─────────────────────────────── */
-      brainMat.emissiveIntensity = 1.0 + smoothAct * 2.8 + pulse * 0.35;
+      brainMat.emissiveIntensity = 1.4 + smoothAct * 2.8 + pulse * 0.35;
       brainMat.emissive.setRGB(
         0.00 + smoothAct * 0.07,
         0.05 + smoothAct * 0.22 + pulse * 0.04,
         0.33 + smoothAct * 0.60 + pulse * 0.12,
       );
 
+      /* ── Dense cellular surface wireframe ────────────────────── */
+      denseWireMat.opacity  = 0.48 + smoothAct * 0.38 + pulse * 0.14;
+      denseWireMat2.opacity = 0.18 + smoothAct * 0.22 + slowPulse * 0.08;
+
       /* ── Wireframe glow layers ────────────────────────────────── */
-      wireMat1.opacity = 0.70 + smoothAct * 0.28 + pulse     * 0.14;
-      wireMat2.opacity = 0.28 + smoothAct * 0.28 + slowPulse * 0.10;
-      wireMat3.opacity = 0.13 + smoothAct * 0.18;
+      wireMat1.opacity = 0.90 + smoothAct * 0.10 + pulse     * 0.10;
+      wireMat2.opacity = 0.55 + smoothAct * 0.30 + slowPulse * 0.12;
+      wireMat3.opacity = 0.28 + smoothAct * 0.20;
 
       /* ── Lighting surge on activation ────────────────────────── */
-      keyLight.intensity  = 220 + smoothAct * 280 + pulse * 90;
-      rimLight.intensity  = 180 + smoothAct * 200;
-      topLight.intensity  = 100 + smoothAct * 120;
-      coreLight.intensity = smoothAct * 70 + pulse * 25;
+      keyLight.intensity  = 350 + smoothAct * 340 + pulse * 110;
+      rimLight.intensity  = 280 + smoothAct * 240;
+      topLight.intensity  = 160 + smoothAct * 140;
+      coreLight.intensity = smoothAct * 80 + pulse * 30;
 
       /* ── Neural pathway pulses ────────────────────────────────── */
       neuralPaths.forEach((np, i) => {
@@ -533,7 +579,12 @@ export default function BrainCanvas({ className = '' }: Props) {
       // Dispose all Three.js GPU resources
       brainGeoHD.dispose();
       brainGeoMD.dispose();
+      brainGeoWire.dispose();
       brainMat.dispose();
+      denseWireGeo.dispose();
+      denseWireGeo2.dispose();
+      denseWireMat.dispose();
+      denseWireMat2.dispose();
       edgesBase.dispose();
       edgesGeo2.dispose();
       edgesGeo3.dispose();
