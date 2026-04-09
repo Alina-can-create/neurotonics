@@ -75,7 +75,7 @@ export default function BrainHero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen overflow-hidden bg-[#060d2e] -mt-24 sm:-mt-28"
+      className="relative min-h-screen overflow-hidden bg-[#01030f] -mt-24 sm:-mt-28"
       aria-label="Hero — 3D Brain Visualisation"
     >
 
@@ -90,16 +90,26 @@ export default function BrainHero() {
         aria-hidden="true"
       />
 
-      {/* ── Deep-space gradient background ───────────────────────── */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#060d2e] via-[#0a1545] to-[#080f2f]" aria-hidden="true" />
+      {/* ── Deep-space background — near-black for maximum glow contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#01030f] via-[#020614] to-[#010408]" aria-hidden="true" />
+
+      {/* ── Radial blue accent — centred right to highlight the brain */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 55% 65% at 72% 50%, rgba(0,60,180,0.18) 0%, transparent 70%)',
+        }}
+        aria-hidden="true"
+      />
 
       {/* ── Fine star-field grid overlay ─────────────────────────── */}
       <div
-        className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        className="absolute inset-0 opacity-[0.018] pointer-events-none"
         style={{
           backgroundImage:
-            'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
+            'radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px)',
+          backgroundSize: '52px 52px',
         }}
         aria-hidden="true"
       />
@@ -211,7 +221,7 @@ export default function BrainHero() {
 
       {/* ── Bottom gradient fade to page background ───────────────────── */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#060d2e] to-transparent pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#01030f] to-transparent pointer-events-none"
         aria-hidden="true"
       />
     </section>
