@@ -25,6 +25,7 @@ interface FieldErrors {
   phone?: string;
   businessStreet?: string;
   businessSuburb?: string;
+  businessState?: string;
   businessPostcode?: string;
 }
 
@@ -88,8 +89,14 @@ function validateFields(fields: FormFields): FieldErrors {
   if (!fields.businessSuburb.trim())
     errors.businessSuburb = 'Suburb is required.';
 
-  if (!fields.businessPostcode.trim())
+  if (!fields.businessState.trim())
+    errors.businessState = 'State is required.';
+
+  if (!fields.businessPostcode.trim()) {
     errors.businessPostcode = 'Postcode is required.';
+  } else if (!/^\d{4}$/.test(fields.businessPostcode.trim())) {
+    errors.businessPostcode = 'Please enter a valid 4-digit postcode.';
+  }
 
   return errors;
 }
@@ -327,7 +334,7 @@ export default function StockistForm() {
                 value={fields.businessState}
                 onChange={handleChange}
                 autoComplete="address-level1"
-                className={`${inputClass} appearance-none pr-8 cursor-pointer`}
+                className={`${errors.businessState ? inputErrorClass : inputClass} appearance-none pr-8 cursor-pointer`}
                 aria-label="State"
               >
                 <option value="">State</option>
@@ -340,13 +347,22 @@ export default function StockistForm() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </span>
+              {errors.businessState && (
+                <p className="mt-1.5 text-xs text-red-400" role="alert">{errors.businessState}</p>
+              )}
             </div>
             <div>
               <input
                 type="text"
                 name="businessPostcode"
                 value={fields.businessPostcode}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, '').slice(0, 4);
+                  setFields((prev) => ({ ...prev, businessPostcode: digits }));
+                  if (errors.businessPostcode) {
+                    setErrors((prev) => ({ ...prev, businessPostcode: undefined }));
+                  }
+                }}
                 placeholder="Postcode"
                 autoComplete="postal-code"
                 inputMode="numeric"
