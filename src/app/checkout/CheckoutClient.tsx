@@ -20,6 +20,8 @@ import {
   type ShippingOption,
 } from '@/lib/shipping';
 import type { CheckoutContact, CheckoutAddress } from '@/lib/checkoutState';
+import { clearCheckoutData } from '@/lib/checkoutState';
+import { clearShipping } from '@/lib/shippingState';
 
 // ---------------------------------------------------------------------------
 // Stripe singleton (initialised once at module level)
@@ -1174,6 +1176,14 @@ function CheckoutContent({
       saveShipping({ option: selectedShipping, postcode: address.postcode, country: address.country });
     });
   }, [selectedShipping, address.postcode, address.country]);
+
+  // Clear saved data when the user navigates away from the checkout page
+  useEffect(() => {
+    return () => {
+      clearCheckoutData();
+      clearShipping();
+    };
+  }, []);
 
   // Re-validate on change after a submit attempt
   useEffect(() => {
