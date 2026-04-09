@@ -32,13 +32,15 @@ const NEURAL_PATH_COUNT   = 130;
 // Viewport width above which the brain is offset right (aligns with text layout)
 const DESKTOP_BREAKPOINT_WIDTH = 860;
 
-// Electric blue / cyan bioluminescent palette — matching reference image
-const COL_DEEP_BLUE    = 0x001133;
-const COL_MID_BLUE     = 0x0044cc;
-const COL_BRIGHT_BLUE  = 0x0066ff;
-const COL_CYAN         = 0x00aaff;
-const COL_BRIGHT_CYAN  = 0x55ccff;
-const COL_ICE_BLUE     = 0xaaddff; // near-white bright cyan for hottest highlights
+// Pure electric-blue bioluminescent palette — matching reference image
+// Colours are biased toward the site's navy/blue brand palette (#0a195a, #1e3a8a)
+// with vivid electric accents to reproduce the reference brain aesthetic.
+const COL_DEEP_BLUE    = 0x000d1a;  // near-black dark navy base
+const COL_MID_BLUE     = 0x0033aa;  // medium brand-consistent blue
+const COL_BRIGHT_BLUE  = 0x1155ee;  // vivid electric blue (main network colour)
+const COL_CYAN         = 0x3377ff;  // bright blue (reference mid-tone)
+const COL_BRIGHT_CYAN  = 0x66aaff;  // bright blue highlight
+const COL_ICE_BLUE     = 0xaaccff;  // near-white blue for hottest highlights
 
 /* ─── Helpers ────────────────────────────────────────────────────────── */
 
@@ -186,27 +188,27 @@ export default function BrainCanvas({ className = '' }: Props) {
 
     /* ── Lighting ─────────────────────────────────────────────────── */
 
-    // Dark ambient keeps contrast high — contrast is key to the glow look
-    const ambient = new THREE.AmbientLight(0x000c1e, 2.0);
+    // Dark ambient — keeps contrast high, critical for the glow look
+    const ambient = new THREE.AmbientLight(0x00081a, 2.2);
     scene.add(ambient);
 
-    // Key — strong blue from upper-front
-    const keyLight = new THREE.PointLight(COL_BRIGHT_BLUE, 350, 28);
+    // Key — strong electric blue from upper-front (boosted for reference brightness)
+    const keyLight = new THREE.PointLight(COL_BRIGHT_BLUE, 520, 28);
     keyLight.position.set(2, 3.5, 5);
     scene.add(keyLight);
 
-    // Fill — cooler blue from the left
-    const fillLight = new THREE.PointLight(COL_MID_BLUE, 130, 22);
+    // Fill — rich blue from the left
+    const fillLight = new THREE.PointLight(COL_MID_BLUE, 180, 22);
     fillLight.position.set(-4, 1, 2);
     scene.add(fillLight);
 
-    // Rim / back — creates the strong halo seen in the reference image
-    const rimLight = new THREE.PointLight(COL_CYAN, 280, 22);
+    // Rim / back — creates the strong halo seen in the reference image (boosted)
+    const rimLight = new THREE.PointLight(COL_CYAN, 420, 24);
     rimLight.position.set(0, 2, -4.5);
     scene.add(rimLight);
 
-    // Top accent — pure cyan
-    const topLight = new THREE.PointLight(COL_BRIGHT_CYAN, 160, 20);
+    // Top accent — bright blue (reference shows strong top illumination)
+    const topLight = new THREE.PointLight(COL_BRIGHT_BLUE, 240, 22);
     topLight.position.set(0, 5.5, 0);
     scene.add(topLight);
 
@@ -225,13 +227,13 @@ export default function BrainCanvas({ className = '' }: Props) {
      * ─────────────────────────────────────────────────────────────── */
     const brainGeoHD = buildBrainGeometry(6); // high-detail solid
     const brainMat   = new THREE.MeshPhysicalMaterial({
-      color:               0x000d22,
-      roughness:           0.5,
-      metalness:           0.08,
-      emissive:            new THREE.Color(0x001555),
-      emissiveIntensity:   1.4,
-      clearcoat:           0.9,
-      clearcoatRoughness:  0.18,
+      color:               0x000510,
+      roughness:           0.4,
+      metalness:           0.05,
+      emissive:            new THREE.Color(0x001a55),
+      emissiveIntensity:   1.8,
+      clearcoat:           0.95,
+      clearcoatRoughness:  0.15,
     });
     const brainMesh = new THREE.Mesh(brainGeoHD, brainMat);
     root.add(brainMesh);
@@ -246,23 +248,23 @@ export default function BrainCanvas({ className = '' }: Props) {
     const brainGeoWire = buildBrainGeometry(denseDetail);
     const denseWireGeo = new THREE.WireframeGeometry(brainGeoWire);
 
-    // Primary dense surface — bright cyan cells
+    // Primary dense surface — bright electric-blue cells (reference palette)
     const denseWireMat = new THREE.LineBasicMaterial({
-      color:       COL_BRIGHT_CYAN,
+      color:       COL_BRIGHT_BLUE,
       transparent: true,
-      opacity:     0.48,
+      opacity:     0.65,
       blending:    THREE.AdditiveBlending,
       depthWrite:  false,
     });
     const denseSurface = new THREE.LineSegments(denseWireGeo, denseWireMat);
     root.add(denseSurface);
 
-    // Second dense layer — slightly larger, ice-blue glow halo around each cell
+    // Second dense layer — slightly larger, bright-blue glow halo around each cell
     const denseWireGeo2 = denseWireGeo.clone();
     const denseWireMat2 = new THREE.LineBasicMaterial({
-      color:       COL_ICE_BLUE,
+      color:       COL_BRIGHT_CYAN,
       transparent: true,
-      opacity:     0.18,
+      opacity:     0.28,
       blending:    THREE.AdditiveBlending,
       depthWrite:  false,
     });
@@ -292,12 +294,12 @@ export default function BrainCanvas({ className = '' }: Props) {
     const wire1 = new THREE.LineSegments(edgesBase, wireMat1);
     root.add(wire1);
 
-    // Layer 2 — mid glow ring (scale 1.012, cyan tint)
+    // Layer 2 — mid glow ring (scale 1.012, bright blue tint)
     const edgesGeo2 = edgesBase.clone();
     const wireMat2  = new THREE.LineBasicMaterial({
       color:       COL_CYAN,
       transparent: true,
-      opacity:     0.55,
+      opacity:     0.68,
       blending:    THREE.AdditiveBlending,
       depthWrite:  false,
     });
@@ -305,12 +307,12 @@ export default function BrainCanvas({ className = '' }: Props) {
     wire2.scale.setScalar(1.012);
     root.add(wire2);
 
-    // Layer 3 — outermost soft haze (scale 1.030, deep blue)
+    // Layer 3 — outermost soft haze (scale 1.030, medium blue)
     const edgesGeo3 = edgesBase.clone();
     const wireMat3  = new THREE.LineBasicMaterial({
       color:       COL_MID_BLUE,
       transparent: true,
-      opacity:     0.28,
+      opacity:     0.38,
       blending:    THREE.AdditiveBlending,
       depthWrite:  false,
     });
@@ -343,11 +345,11 @@ export default function BrainCanvas({ className = '' }: Props) {
 
       const tubeGeo = new THREE.TubeGeometry(curve, segs, radius, 3, false);
 
-      // Vary colour slightly between bright blue and bright cyan
+      // Vary colour between bright blue and bright highlight blue (matches reference)
       const col = new THREE.Color(COL_BRIGHT_BLUE).lerp(
         new THREE.Color(COL_BRIGHT_CYAN), rng(),
       );
-      const baseOpacity = 0.14 + rng() * 0.22;
+      const baseOpacity = 0.18 + rng() * 0.26;
 
       const tubeMat = new THREE.MeshBasicMaterial({
         color:       col,
@@ -396,10 +398,10 @@ export default function BrainCanvas({ className = '' }: Props) {
 
     const particleMat = new THREE.PointsMaterial({
       color:           COL_BRIGHT_CYAN,
-      size:            0.016,
+      size:            0.018,
       sizeAttenuation: true,
       transparent:     true,
-      opacity:         0.55,
+      opacity:         0.65,
       blending:        THREE.AdditiveBlending,
       depthWrite:      false,
     });
@@ -419,9 +421,9 @@ export default function BrainCanvas({ className = '' }: Props) {
     const bloomItems: BloomItem[] = [];
 
     ([
-      { size: 3.2, base: 0.07,  color: COL_BRIGHT_BLUE },
-      { size: 4.8, base: 0.045, color: COL_MID_BLUE    },
-      { size: 6.8, base: 0.025, color: COL_DEEP_BLUE   },
+      { size: 3.4, base: 0.09,  color: COL_BRIGHT_BLUE },
+      { size: 5.2, base: 0.055, color: COL_MID_BLUE    },
+      { size: 7.2, base: 0.030, color: COL_DEEP_BLUE   },
     ] as const).forEach(({ size, base, color }) => {
       const geo = new THREE.PlaneGeometry(size, size);
       const mat = new THREE.MeshBasicMaterial({
@@ -476,7 +478,10 @@ export default function BrainCanvas({ className = '' }: Props) {
     let lastTime = 0;
 
     // Smoothed animation state
-    let smoothRotX = 0;
+    // Initialise X rotation with tilt bias so the brain shows its cortical
+    // surface on load — matching the reference top-down perspective.
+    const TILT_BIAS = -0.30;
+    let smoothRotX = TILT_BIAS;
     let smoothRotY = 0;
     let smoothAct  = 0;  // neural activation (0–1)
     let smoothPosX = 0;  // lateral offset for right-side positioning
@@ -499,7 +504,9 @@ export default function BrainCanvas({ className = '' }: Props) {
 
       /* ── Rotation ─────────────────────────────────────────────── */
       const targetRotY = scrollProgress * Math.PI * 1.15 + mouseX * 0.20;
-      const targetRotX = -scrollProgress * 0.26           + mouseY * -0.12;
+      // Permanent TILT_BIAS keeps the initial view tilted toward top-down
+      // so the cortical surface is prominently visible (matches reference image)
+      const targetRotX = TILT_BIAS - scrollProgress * 0.26 + mouseY * -0.12;
       const swayY      = Math.sin(elapsed * 0.26) * 0.055;
       const swayX      = Math.cos(elapsed * 0.18) * 0.022;
 
@@ -519,27 +526,28 @@ export default function BrainCanvas({ className = '' }: Props) {
       const slowPulse = (Math.sin(elapsed * 0.65) * 0.5 + 0.5);
 
       /* ── Brain core emissive glow ─────────────────────────────── */
-      brainMat.emissiveIntensity = 1.4 + smoothAct * 2.8 + pulse * 0.35;
+      // Pure electric-blue emissive to match reference (no green/cyan tint)
+      brainMat.emissiveIntensity = 1.8 + smoothAct * 3.2 + pulse * 0.40;
       brainMat.emissive.setRGB(
-        0.00 + smoothAct * 0.07,
-        0.05 + smoothAct * 0.22 + pulse * 0.04,
-        0.33 + smoothAct * 0.60 + pulse * 0.12,
+        0.00 + smoothAct * 0.04,
+        0.04 + smoothAct * 0.18 + pulse * 0.03,
+        0.40 + smoothAct * 0.70 + pulse * 0.15,
       );
 
       /* ── Dense cellular surface wireframe ────────────────────── */
-      denseWireMat.opacity  = 0.48 + smoothAct * 0.38 + pulse * 0.14;
-      denseWireMat2.opacity = 0.18 + smoothAct * 0.22 + slowPulse * 0.08;
+      denseWireMat.opacity  = 0.65 + smoothAct * 0.30 + pulse * 0.12;
+      denseWireMat2.opacity = 0.28 + smoothAct * 0.22 + slowPulse * 0.08;
 
       /* ── Wireframe glow layers ────────────────────────────────── */
-      wireMat1.opacity = 0.90 + smoothAct * 0.10 + pulse     * 0.10;
-      wireMat2.opacity = 0.55 + smoothAct * 0.30 + slowPulse * 0.12;
-      wireMat3.opacity = 0.28 + smoothAct * 0.20;
+      wireMat1.opacity = 0.92 + smoothAct * 0.08 + pulse     * 0.08;
+      wireMat2.opacity = 0.68 + smoothAct * 0.24 + slowPulse * 0.10;
+      wireMat3.opacity = 0.38 + smoothAct * 0.20;
 
       /* ── Lighting surge on activation ────────────────────────── */
-      keyLight.intensity  = 350 + smoothAct * 340 + pulse * 110;
-      rimLight.intensity  = 280 + smoothAct * 240;
-      topLight.intensity  = 160 + smoothAct * 140;
-      coreLight.intensity = smoothAct * 80 + pulse * 30;
+      keyLight.intensity  = 520 + smoothAct * 420 + pulse * 140;
+      rimLight.intensity  = 420 + smoothAct * 300;
+      topLight.intensity  = 240 + smoothAct * 180;
+      coreLight.intensity = smoothAct * 100 + pulse * 40;
 
       /* ── Neural pathway pulses ────────────────────────────────── */
       neuralPaths.forEach((np, i) => {
@@ -556,11 +564,11 @@ export default function BrainCanvas({ className = '' }: Props) {
       /* ── Particles ────────────────────────────────────────────── */
       particles.rotation.y = elapsed * 0.055;
       particles.rotation.x = elapsed * 0.020;
-      particleMat.opacity  = 0.45 + smoothAct * 0.40 + slowPulse * 0.08;
+      particleMat.opacity  = 0.55 + smoothAct * 0.35 + slowPulse * 0.08;
 
       /* ── Bloom planes ─────────────────────────────────────────── */
       bloomItems.forEach((b) => {
-        b.mat.opacity = b.base + smoothAct * 0.055 + slowPulse * 0.018;
+        b.mat.opacity = b.base + smoothAct * 0.065 + slowPulse * 0.022;
       });
 
       /* ── Render ───────────────────────────────────────────────── */
