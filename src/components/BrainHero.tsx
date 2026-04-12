@@ -156,7 +156,7 @@ export default function BrainHero() {
               style={{ animationDelay: '440ms' }}
             >
               {[
-                { value: '10,000+', label: 'Happy Customers' },
+                { value: '7',       label: 'Active Ingredients' },
                 { value: '100%',    label: 'Natural Formula'  },
               ].map((stat) => (
                 <div key={stat.label}>
