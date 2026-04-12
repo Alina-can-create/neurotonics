@@ -4,10 +4,10 @@ import ScrollReveal from '@/components/ScrollReveal';
 import AnimatedCounter from '@/components/AnimatedCounter';
 
 const stats = [
-  { target: 10000, suffix: '+', label: 'Happy Customers' },
-  { target: 4.9,   suffix: '★', label: 'Average Rating',  decimals: 1 },
-  { target: 100,   suffix: '%', label: 'Natural Formula' },
-  { target: 30000, suffix: '+', label: 'Orders Shipped'  },
+  { target: 7,   suffix: '',  label: 'Active Ingredients'  },
+  { target: 60,  suffix: '',  label: 'Capsules Per Bottle' },
+  { target: 100, suffix: '%', label: 'Natural Formula'     },
+  { target: 30,  suffix: '-Day', label: 'Supply'           },
 ] as const;
 
 export default function StatsSection() {

@@ -185,8 +185,8 @@ export default function ParallaxHero() {
               style={{ animationDelay: '440ms' }}
             >
               {[
-                { value: '10,000+', label: 'Happy Customers' },
-                { value: '4.9 ★',   label: 'Average Rating'  },
+                { value: '7',       label: 'Active Ingredients'  },
+                { value: '60',      label: 'Capsules Per Bottle' },
                 { value: '100%',    label: 'Natural Formula'  },
               ].map((stat) => (
                 <div key={stat.label}>
