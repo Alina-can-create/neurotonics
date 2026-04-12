@@ -403,6 +403,8 @@ app.post('/stockist-application', async (req, res) => {
     email,
     phone,
     businessAddress,
+    industry,
+    businessWebsite,
     message,
   } = req.body || {};
 
@@ -427,6 +429,8 @@ app.post('/stockist-application', async (req, res) => {
     email:           sanitiseText(email,            254),
     phone:           sanitiseText(phone,             30),
     businessAddress: sanitiseText(businessAddress,  300),
+    industry:        sanitiseText(industry || '',   100),
+    businessWebsite: sanitiseText(businessWebsite || '', 300),
     message:         sanitiseText(message || '',    1000),
   };
 
@@ -454,6 +458,8 @@ app.post('/stockist-application', async (req, res) => {
     email:           escapeHtml(safe.email),
     phone:           escapeHtml(safe.phone),
     businessAddress: escapeHtml(safe.businessAddress),
+    industry:        escapeHtml(safe.industry),
+    businessWebsite: escapeHtml(safe.businessWebsite),
     message:         escapeHtml(safe.message).replace(/\n/g, '<br>'),
   };
 
@@ -466,6 +472,8 @@ app.post('/stockist-application', async (req, res) => {
       <tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Email</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;"><a href="mailto:${h.email}">${h.email}</a></td></tr>
       <tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Phone</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">${h.phone}</td></tr>
       <tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Business Address</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">${h.businessAddress}</td></tr>
+      ${safe.industry ? `<tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Industry</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">${h.industry}</td></tr>` : ''}
+      ${safe.businessWebsite ? `<tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Website</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;"><a href="${h.businessWebsite}">${h.businessWebsite}</a></td></tr>` : ''}
       ${safe.message ? `<tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Message</td><td style="padding:8px 12px;">${h.message}</td></tr>` : ''}
     </table>
     <p style="font-family:sans-serif;font-size:12px;color:#718096;margin-top:24px;">Submitted via the Neurotonics website stockist application form.</p>
@@ -480,8 +488,10 @@ app.post('/stockist-application', async (req, res) => {
     `Email:            ${safe.email}`,
     `Phone:            ${safe.phone}`,
     `Business Address: ${safe.businessAddress}`,
-    safe.message ? `\nMessage:\n${safe.message}` : '',
-  ].join('\n');
+    safe.industry        ? `Industry:         ${safe.industry}`        : '',
+    safe.businessWebsite ? `Website:          ${safe.businessWebsite}` : '',
+    safe.message         ? `\nMessage:\n${safe.message}`               : '',
+  ].filter((line) => line !== '').join('\n');
 
   try {
     await emailTransporter.sendMail({

@@ -69,7 +69,7 @@ const EMPTY: FormFields = {
   message: '',
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 
 function validateAbn(abn: string): boolean {
   return /^\d{11}$/.test(abn.replace(/\s/g, ''));
@@ -182,8 +182,8 @@ export default function StockistForm() {
     setFormState('submitting');
     setServerError('');
 
-    if (!API_URL) {
-      setServerError('Application endpoint is not configured. Please contact us directly.');
+    if (!WEB3FORMS_KEY) {
+      setServerError('Form is not configured. Please contact us directly at admin@elitedigitalconsulting.com.au.');
       setFormState('error');
       return;
     }
@@ -196,33 +196,38 @@ export default function StockistForm() {
         fields.businessPostcode,
       ].filter(Boolean).join(', ');
 
-      const res = await fetch(`${API_URL}/stockist-application`, {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fullName: fields.fullName,
-          businessName: fields.businessName,
-          abn: fields.abn,
-          email: fields.email,
-          phone: fields.phone,
-          businessAddress,
-          industry: fields.industry,
-          businessWebsite: fields.businessWebsite,
-          message: fields.message,
+          access_key: WEB3FORMS_KEY,
+          subject: `Stockist Application — ${fields.businessName}`,
+          from_name: fields.fullName,
+          botcheck: false,
+          'Full Name': fields.fullName,
+          'Business Name': fields.businessName,
+          'ABN': fields.abn,
+          'Email': fields.email,
+          'Phone': fields.phone,
+          'Business Address': businessAddress,
+          'Industry': fields.industry,
+          'Business Website': fields.businessWebsite || '(not provided)',
+          'Message': fields.message || '(not provided)',
         }),
       });
 
-      if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.success) {
         setFormState('success');
         setFields(EMPTY);
         setErrors({});
       } else {
-        const data = await res.json().catch(() => ({}));
-        setServerError(data.error || 'Something went wrong. Please try again.');
+        setServerError(data.message || 'Something went wrong. Please try again.');
         setFormState('error');
       }
     } catch {
-      setServerError('Unable to connect. Please check your connection and try again.');
+      setServerError('Unable to submit. Please check your connection and try again, or contact us directly at admin@elitedigitalconsulting.com.au.');
       setFormState('error');
     }
   }
@@ -237,8 +242,7 @@ export default function StockistForm() {
         </div>
         <h3 className="text-2xl font-bold text-white mb-3">Application Received!</h3>
         <p className="text-white/60 leading-relaxed max-w-md mx-auto">
-          Thank you for your interest in becoming a Neurotonics stockist. Our team will review your
-          application and be in touch within 2–3 business days.
+          Thank you for your interest in becoming a Neurotonics stockist. Our team will be in touch within 2–3 business days.
         </p>
       </div>
     );
