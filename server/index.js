@@ -134,9 +134,9 @@ app.use('/images', express.static(IMAGES_DIR));
 // ---------------------------------------------------------------------------
 const ADMIN_DIST = path.join(__dirname, 'public', 'admin');
 if (fs.existsSync(ADMIN_DIST)) {
-  app.use('/admin', express.static(ADMIN_DIST));
+  app.use('/admin', cmsRateLimiter, express.static(ADMIN_DIST));
   // Client-side routing fallback
-  app.get('/admin/*path', (_req, res) => {
+  app.get('/admin/*path', cmsRateLimiter, (_req, res) => {
     res.sendFile(path.join(ADMIN_DIST, 'index.html'));
   });
 }
