@@ -6,6 +6,7 @@ import { ToastContainer } from './components/Toast';
 import LoginPage          from './pages/LoginPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage  from './pages/ResetPasswordPage';
+import CreateAccountPage  from './pages/CreateAccountPage';
 import DashboardPage from './pages/DashboardPage';
 import OrdersPage    from './pages/OrdersPage';
 import ProductsPage  from './pages/ProductsPage';
@@ -34,6 +35,7 @@ function AppShell() {
       <Routes>
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password"  element={<ResetPasswordPage />} />
+        <Route path="/register"        element={<CreateAccountPage />} />
         <Route path="*"                element={<LoginPage />} />
       </Routes>
     );

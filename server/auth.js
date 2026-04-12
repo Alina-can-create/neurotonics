@@ -193,6 +193,61 @@ router.get('/me', requireAuth, (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /cms/auth/register
+// Public endpoint — creates a new editor account.
+// ---------------------------------------------------------------------------
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many registration attempts. Please try again later.' },
+});
+
+router.post('/register', registerLimiter, async (req, res) => {
+  const { email, password, name } = req.body || {};
+
+  if (typeof email !== 'string' || !email.trim()) {
+    return res.status(400).json({ error: 'Valid email is required.' });
+  }
+  if (typeof password !== 'string' || password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  }
+
+  const normalEmail = email.trim().toLowerCase();
+  const existing = stmts.getUserByEmail.get(normalEmail);
+  if (existing) {
+    return res.status(409).json({ error: 'An account with that email already exists.' });
+  }
+
+  try {
+    const hash = await hashPassword(password);
+    const result = stmts.createUser.run(normalEmail, hash, 'editor', (name || '').trim());
+    const user = stmts.getUserById.get(result.lastInsertRowid);
+
+    const payload = { sub: user.id, email: user.email, role: user.role, name: user.name };
+    const accessToken  = signAccess(payload);
+    const refreshToken = signRefresh({ sub: user.id });
+
+    res.cookie(COOKIE_NAME, refreshToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/cms/auth',
+    });
+
+    return res.status(201).json({
+      accessToken,
+      user: { id: user.id, email: user.email, role: user.role, name: user.name },
+    });
+  } catch (err) {
+    console.error('[auth] Register error:', err.message);
+    return res.status(500).json({ error: 'Failed to create account.' });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // POST /cms/auth/forgot-password
 // Always returns 200 to avoid leaking whether the email exists.
 // ---------------------------------------------------------------------------
