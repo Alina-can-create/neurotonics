@@ -44,7 +44,7 @@ export default function BrainHero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen overflow-hidden bg-[#01030f] -mt-24 sm:-mt-28"
+      className="relative min-h-screen overflow-hidden bg-[#01030f] -mt-18 sm:-mt-20"
       aria-label="Hero — 3D Brain Visualisation"
     >
 
@@ -90,7 +90,7 @@ export default function BrainHero() {
         style={{ willChange: 'transform, opacity' }}
         data-testid="hero-text-content"
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-44 sm:pt-56 pb-20 sm:pb-28">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-44 pb-20 sm:pb-28">
 
           <div className="lg:w-2/3">
 
