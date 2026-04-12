@@ -83,7 +83,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white text-gray-900">
         <CartProvider>
           <Header />
-          <div className="flex-1 pt-24 sm:pt-28">{children}</div>
+          <div className="flex-1 pt-18 sm:pt-20">{children}</div>
           <Footer />
         </CartProvider>
       </body>
