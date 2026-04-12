@@ -24,7 +24,7 @@ export default function AnnouncementBar() {
   );
 
   return (
-    <div className="bg-brand-navy text-white py-2 text-xs sm:text-sm tracking-wide overflow-hidden">
+    <div className="bg-brand-navy text-white py-1 text-xs sm:text-sm tracking-wide overflow-hidden">
       {/* Accessible text for screen readers — announced once, outside aria-hidden track */}
       <span className="sr-only">
         {announcement.text}

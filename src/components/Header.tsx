@@ -51,7 +51,7 @@ export default function Header() {
           ].join(' ')}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16 sm:h-18">
+            <div className="flex items-center justify-between h-12 sm:h-14">
               {/* Logo */}
               <Link href="/" className="flex items-center space-x-2" aria-label="Neurotonics — go to homepage">
                 <span className="font-bold tracking-tight transition-all duration-300 text-gray-900 text-xl sm:text-2xl">
