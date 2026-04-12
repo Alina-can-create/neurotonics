@@ -33,8 +33,8 @@ export default function AnimatedCounter({
 
     // Reduced-motion: set final value immediately without scheduling
     if (reducedMotion) {
-      setValue(target);
-      return;
+      const id = requestAnimationFrame(() => setValue(target));
+      return () => cancelAnimationFrame(id);
     }
 
     let rafId: number | undefined;
