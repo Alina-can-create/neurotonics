@@ -460,7 +460,7 @@ export default function StockistForm() {
           name="businessWebsite"
           value={fields.businessWebsite}
           onChange={handleChange}
-          placeholder="https://www.yourbusiness.com.au (optional)"
+          placeholder="https://www.yourbusiness.com.au"
           autoComplete="url"
           className={inputClass}
         />
@@ -472,7 +472,7 @@ export default function StockistForm() {
           name="message"
           value={fields.message}
           onChange={handleChange}
-          placeholder="Tell us a bit about your store and why you'd like to stock Neurotonics (optional)"
+          placeholder="Tell us a bit about your store and why you'd like to stock Neurotonics"
           rows={4}
           className={`${inputClass} resize-none`}
         />
