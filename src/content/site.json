@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "Neurotonics",
-    "tagline": "Australia's Trusted Cognitive Wellness Brand",
+    "tagline": "The Smart Choice for Cognitive Enhancement",
     "description": "Premium cognitive supplements backed by science. Natural ingredients, ARTG listed, and proudly made in Australia.",
     "logo": "/images/logo.svg"
   },
@@ -11,8 +11,8 @@
     "linkText": "Buy Now"
   },
   "hero": {
-    "headline": "Unlock Your Mind's Full Potential",
-    "subheadline": "Premium, science-backed cognitive supplements made with 100% natural ingredients. ARTG listed. Vegan. Made in Australia.",
+    "headline": "Elevate Your Mind, Empower Your Life",
+    "subheadline": "Achieve Unmatched Mental Clarity and Focus",
     "ctaText": "Buy Now",
     "ctaLink": "/product",
     "secondaryCtaText": "Discover Your Wellness Plan",
@@ -121,6 +121,9 @@
       "text": "Finally, a supplement that's ARTG listed and actually works! I feel confident knowing it's made in Australia with real quality standards. My memory has improved noticeably in just a month."
     }
   ],
+  "ctaBanner": {
+    "headline": "Unlock Your Cognitive Performance Today"
+  },
   "stockist": {
     "eyebrow": "Partner With Us",
     "headline": "Become a Stockist",

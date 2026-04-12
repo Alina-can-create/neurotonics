@@ -106,7 +106,7 @@ function CategoryIcon({ icon }: { icon: string }) {
 
 /* ── Page ───────────────────────────────────────────────────────── */
 export default function Home() {
-  const { categories, features, stockist } = siteContent;
+  const { categories, features, stockist, ctaBanner } = siteContent;
 
   return (
     <>
@@ -239,8 +239,8 @@ export default function Home() {
               Personalised Wellness
             </p>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-6 leading-[1.05]">
-              Not Sure Where <br className="hidden sm:block" />to Start?
-            </h2>
+                {ctaBanner.headline}
+              </h2>
             <p className="text-white/70 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
               Take our 2-minute wellness quiz and receive personalised supplement recommendations based on your unique goals.
             </p>
