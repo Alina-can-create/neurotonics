@@ -78,6 +78,16 @@ export async function logout() {
   setAccessToken(null);
 }
 
+export async function register(email: string, password: string, name: string) {
+  const data = await api.post<{ accessToken: string; user: User }>('/cms/auth/register', {
+    email,
+    password,
+    name,
+  });
+  setAccessToken(data.accessToken);
+  return data;
+}
+
 export async function forgotPassword(email: string) {
   return api.post<{ message: string }>('/cms/auth/forgot-password', { email });
 }
