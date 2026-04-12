@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -161,10 +162,17 @@ export default function StockistForm() {
   const [formState, setFormState] = useState<FormState>('idle');
   const [serverError, setServerError] = useState('');
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setFields((prev) => ({ ...prev, [name]: value }));
     // Clear individual field error on change
+    if (errors[name as keyof FieldErrors]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  }
+
+  function handleSelectChange(name: string, value: string) {
+    setFields((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof FieldErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -350,24 +358,15 @@ export default function StockistForm() {
               )}
             </div>
             <div className="relative">
-              <select
+              <CustomSelect
                 name="businessState"
                 value={fields.businessState}
-                onChange={handleChange}
-                autoComplete="address-level1"
-                className={`${errors.businessState ? inputErrorClass : inputClass} appearance-none pr-8 cursor-pointer`}
-                aria-label="State"
-              >
-                <option value="">State</option>
-                {AU_STATES.map((s) => (
-                  <option key={s.code} value={s.code}>{s.code}</option>
-                ))}
-              </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/40">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </span>
+                onChange={handleSelectChange}
+                options={AU_STATES.map((s) => ({ value: s.code, label: s.code }))}
+                placeholder="State"
+                hasError={!!errors.businessState}
+                ariaLabel="State"
+              />
               {errors.businessState && (
                 <p className="mt-1.5 text-xs text-red-400" role="alert">{errors.businessState}</p>
               )}
@@ -400,25 +399,15 @@ export default function StockistForm() {
 
       {/* Row 5: Industry */}
       <Field label="Industry" required error={errors.industry}>
-        <div className="relative">
-          <select
-            name="industry"
-            value={fields.industry}
-            onChange={handleChange}
-            className={`${errors.industry ? inputErrorClass : inputClass} appearance-none pr-8 cursor-pointer`}
-            aria-label="Industry"
-          >
-            <option value="">Select your industry</option>
-            {INDUSTRIES.map((ind) => (
-              <option key={ind} value={ind}>{ind}</option>
-            ))}
-          </select>
-          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/40">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </span>
-        </div>
+        <CustomSelect
+          name="industry"
+          value={fields.industry}
+          onChange={handleSelectChange}
+          options={INDUSTRIES.map((ind) => ({ value: ind, label: ind }))}
+          placeholder="Select your industry"
+          hasError={!!errors.industry}
+          ariaLabel="Industry"
+        />
       </Field>
 
       {/* Row 6: Business Website (optional) */}
