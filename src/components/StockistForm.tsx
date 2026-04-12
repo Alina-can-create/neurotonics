@@ -14,6 +14,8 @@ interface FormFields {
   businessSuburb: string;
   businessState: string;
   businessPostcode: string;
+  industry: string;
+  businessWebsite: string;
   message: string;
 }
 
@@ -27,6 +29,7 @@ interface FieldErrors {
   businessSuburb?: string;
   businessState?: string;
   businessPostcode?: string;
+  industry?: string;
 }
 
 const AU_STATES = [
@@ -40,6 +43,17 @@ const AU_STATES = [
   { code: 'WA', name: 'Western Australia' },
 ];
 
+const INDUSTRIES = [
+  'Health & Wellness Retail',
+  'Pharmacy / Chemist',
+  'Gym & Fitness',
+  'Naturopathy / Allied Health',
+  'Online Retail',
+  'Sports & Nutrition',
+  'Beauty & Spa',
+  'Other',
+];
+
 const EMPTY: FormFields = {
   fullName: '',
   businessName: '',
@@ -50,6 +64,8 @@ const EMPTY: FormFields = {
   businessSuburb: '',
   businessState: '',
   businessPostcode: '',
+  industry: '',
+  businessWebsite: '',
   message: '',
 };
 
@@ -97,6 +113,9 @@ function validateFields(fields: FormFields): FieldErrors {
   } else if (!/^\d{4}$/.test(fields.businessPostcode.trim())) {
     errors.businessPostcode = 'Please enter a valid 4-digit postcode.';
   }
+
+  if (!fields.industry.trim())
+    errors.industry = 'Please select an industry.';
 
   return errors;
 }
@@ -187,6 +206,8 @@ export default function StockistForm() {
           email: fields.email,
           phone: fields.phone,
           businessAddress,
+          industry: fields.industry,
+          businessWebsite: fields.businessWebsite,
           message: fields.message,
         }),
       });
@@ -377,8 +398,44 @@ export default function StockistForm() {
         </div>
       </div>
 
-      {/* Row 5: Message (optional) */}
-      <Field label="Message" error={undefined}>
+      {/* Row 5: Industry */}
+      <Field label="Industry" required error={errors.industry}>
+        <div className="relative">
+          <select
+            name="industry"
+            value={fields.industry}
+            onChange={handleChange}
+            className={`${errors.industry ? inputErrorClass : inputClass} appearance-none pr-8 cursor-pointer`}
+            aria-label="Industry"
+          >
+            <option value="">Select your industry</option>
+            {INDUSTRIES.map((ind) => (
+              <option key={ind} value={ind}>{ind}</option>
+            ))}
+          </select>
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/40">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </div>
+      </Field>
+
+      {/* Row 6: Business Website (optional) */}
+      <Field label="Business Website" error={undefined}>
+        <input
+          type="url"
+          name="businessWebsite"
+          value={fields.businessWebsite}
+          onChange={handleChange}
+          placeholder="https://www.yourbusiness.com.au (optional)"
+          autoComplete="url"
+          className={inputClass}
+        />
+      </Field>
+
+      {/* Row 7: Why do you want to become a stockist (optional) */}
+      <Field label="Why do you want to become a stockist" error={undefined}>
         <textarea
           name="message"
           value={fields.message}
