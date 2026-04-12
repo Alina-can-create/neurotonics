@@ -140,9 +140,11 @@ function sanitiseEmail(email) {
 }
 
 /**
- * Sanitise a plain text string for metadata (strip control chars, truncate).
+ * Sanitise a plain text string for Stripe metadata (strip all control chars
+ * including newlines, truncate).  Use this for values that must fit on a
+ * single line in the Stripe dashboard.
  */
-function sanitiseText(value, maxLen = 200) {
+function sanitiseMetaText(value, maxLen = 200) {
   if (typeof value !== 'string') return '';
   return value.replace(/[\x00-\x1F\x7F]/g, '').trim().slice(0, maxLen);
 }
@@ -224,18 +226,18 @@ app.post('/create-checkout-session', async (req, res) => {
 
   // --- Sanitise customer details ---
   const safeEmail = sanitiseEmail(customerEmail);
-  const safePhone = sanitiseText(customerPhone, 30);
+  const safePhone = sanitiseMetaText(customerPhone, 30);
 
   // Build address metadata (fields already validated client-side)
   const addrMeta = shippingAddress && typeof shippingAddress === 'object'
     ? {
-        addrName: sanitiseText(shippingAddress.fullName, 100),
-        addrLine1: sanitiseText(shippingAddress.address1, 200),
-        addrLine2: sanitiseText(shippingAddress.address2, 200),
-        addrCity: sanitiseText(shippingAddress.city, 100),
-        addrState: sanitiseText(shippingAddress.state, 100),
-        addrPostcode: sanitiseText(shippingAddress.postcode, 20),
-        addrCountry: sanitiseText(shippingAddress.country, 10),
+        addrName: sanitiseMetaText(shippingAddress.fullName, 100),
+        addrLine1: sanitiseMetaText(shippingAddress.address1, 200),
+        addrLine2: sanitiseMetaText(shippingAddress.address2, 200),
+        addrCity: sanitiseMetaText(shippingAddress.city, 100),
+        addrState: sanitiseMetaText(shippingAddress.state, 100),
+        addrPostcode: sanitiseMetaText(shippingAddress.postcode, 20),
+        addrCountry: sanitiseMetaText(shippingAddress.country, 10),
       }
     : {};
 
@@ -299,10 +301,10 @@ app.post('/create-payment-intent', async (req, res) => {
 
   if (shipping && typeof shipping === 'object') {
     if (typeof shipping.zone === 'string') {
-      safeMeta.shippingZone = sanitiseText(shipping.zone, 100);
+      safeMeta.shippingZone = sanitiseMetaText(shipping.zone, 100);
     }
     if (typeof shipping.name === 'string') {
-      safeMeta.shippingOption = sanitiseText(shipping.name, 100);
+      safeMeta.shippingOption = sanitiseMetaText(shipping.name, 100);
     }
     if (typeof shipping.fee === 'number' && Number.isFinite(shipping.fee)) {
       safeMeta.shippingFee = String(Math.round(shipping.fee * 100));
@@ -311,16 +313,16 @@ app.post('/create-payment-intent', async (req, res) => {
 
   if (shippingAddress && typeof shippingAddress === 'object') {
     if (typeof shippingAddress.fullName === 'string') {
-      safeMeta.addrName = sanitiseText(shippingAddress.fullName, 100);
+      safeMeta.addrName = sanitiseMetaText(shippingAddress.fullName, 100);
     }
     if (typeof shippingAddress.city === 'string') {
-      safeMeta.addrCity = sanitiseText(shippingAddress.city, 100);
+      safeMeta.addrCity = sanitiseMetaText(shippingAddress.city, 100);
     }
     if (typeof shippingAddress.state === 'string') {
-      safeMeta.addrState = sanitiseText(shippingAddress.state, 50);
+      safeMeta.addrState = sanitiseMetaText(shippingAddress.state, 50);
     }
     if (typeof shippingAddress.country === 'string') {
-      safeMeta.addrCountry = sanitiseText(shippingAddress.country, 10);
+      safeMeta.addrCountry = sanitiseMetaText(shippingAddress.country, 10);
     }
   }
 
@@ -393,6 +395,20 @@ function sanitiseText(value, maxLen) {
 function isValidAbn(abn) {
   const digits = abn.replace(/\s/g, '');
   return /^\d{11}$/.test(digits);
+}
+
+/**
+ * Validate a business website URL: only allow absolute http/https URLs.
+ * Returns the URL if safe, or an empty string otherwise.
+ */
+function sanitiseWebsiteUrl(url) {
+  if (typeof url !== 'string' || url.length === 0) return '';
+  try {
+    const parsed = new URL(url);
+    return (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.toString() : '';
+  } catch {
+    return '';
+  }
 }
 
 app.post('/stockist-application', async (req, res) => {
@@ -473,7 +489,7 @@ app.post('/stockist-application', async (req, res) => {
       <tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Phone</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">${h.phone}</td></tr>
       <tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Business Address</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">${h.businessAddress}</td></tr>
       ${safe.industry ? `<tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Industry</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">${h.industry}</td></tr>` : ''}
-      ${safe.businessWebsite ? `<tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Website</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;"><a href="${h.businessWebsite}">${h.businessWebsite}</a></td></tr>` : ''}
+      ${safe.businessWebsite ? `<tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Website</td><td style="padding:8px 12px;border-bottom:1px solid #e2e8f0;">${sanitiseWebsiteUrl(safe.businessWebsite) ? `<a href="${sanitiseWebsiteUrl(safe.businessWebsite)}">${h.businessWebsite}</a>` : h.businessWebsite}</td></tr>` : ''}
       ${safe.message ? `<tr><td style="padding:8px 12px;font-weight:bold;background:#f5f7fa;">Message</td><td style="padding:8px 12px;">${h.message}</td></tr>` : ''}
     </table>
     <p style="font-family:sans-serif;font-size:12px;color:#718096;margin-top:24px;">Submitted via the Neurotonics website stockist application form.</p>
